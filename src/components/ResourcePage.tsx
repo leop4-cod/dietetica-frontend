@@ -28,6 +28,7 @@ import {
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import type { ResourceConfig, FieldConfig } from "../resources/config";
 import { createResource, deleteResource, listResource, updateResource } from "../api/resources";
+import { hasRole } from "../auth/auth";
 
 type Props = {
   config: ResourceConfig;
@@ -98,6 +99,10 @@ export default function ResourcePage({ config }: Props) {
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
+
+  const canCreate = hasRole(config.createRoles ?? config.roles);
+  const canUpdate = hasRole(config.updateRoles ?? config.roles);
+  const canDelete = hasRole(config.deleteRoles ?? config.roles);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -217,9 +222,11 @@ export default function ResourcePage({ config }: Props) {
             <Button variant="outlined" onClick={() => load()} disabled={loading}>
               Recargar
             </Button>
-            <Button variant="contained" onClick={openCreate}>
-              Nuevo
-            </Button>
+            {canCreate && (
+              <Button variant="contained" onClick={openCreate}>
+                Nuevo
+              </Button>
+            )}
           </Stack>
         </Stack>
       </Paper>
@@ -262,14 +269,24 @@ export default function ResourcePage({ config }: Props) {
                       return <TableCell key={col.key}>{String(value ?? "-")}</TableCell>;
                     })}
                     <TableCell align="right">
-                      <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                        <Button size="small" onClick={() => openEdit(row)}>
-                          Editar
-                        </Button>
-                        <Button size="small" color="error" onClick={() => handleDelete(row)}>
-                          Eliminar
-                        </Button>
-                      </Stack>
+                      {canUpdate || canDelete ? (
+                        <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                          {canUpdate && (
+                            <Button size="small" onClick={() => openEdit(row)}>
+                              Editar
+                            </Button>
+                          )}
+                          {canDelete && (
+                            <Button size="small" color="error" onClick={() => handleDelete(row)}>
+                              Eliminar
+                            </Button>
+                          )}
+                        </Stack>
+                      ) : (
+                        <Typography variant="caption" color="text.secondary">
+                          Sin acciones
+                        </Typography>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

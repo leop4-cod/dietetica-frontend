@@ -37,6 +37,9 @@ export type ResourceConfig = {
   createMethod?: "POST";
   updateMethod?: "PUT" | "PATCH";
   roles?: Role[];
+  createRoles?: Role[];
+  updateRoles?: Role[];
+  deleteRoles?: Role[];
 };
 
 export type NavItem = {
@@ -57,6 +60,9 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     path: "/users",
     endpoint: "/users",
     roles: ["ADMIN"],
+    createRoles: ["ADMIN"],
+    updateRoles: ["ADMIN"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       { key: "nombre", label: "Nombre" },
@@ -88,6 +94,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Categorias",
     path: "/categories",
     endpoint: "/categories",
+    roles: ["ADMIN", "OPERADOR"],
+    createRoles: ["ADMIN", "OPERADOR"],
+    updateRoles: ["ADMIN", "OPERADOR"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       { key: "nombre", label: "Nombre" },
@@ -103,6 +113,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Productos",
     path: "/products",
     endpoint: "/products",
+    roles: ["ADMIN", "OPERADOR"],
+    createRoles: ["ADMIN", "OPERADOR"],
+    updateRoles: ["ADMIN", "OPERADOR"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       { key: "nombre", label: "Nombre" },
@@ -145,6 +159,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Proveedores",
     path: "/suppliers",
     endpoint: "/suppliers",
+    roles: ["ADMIN", "OPERADOR"],
+    createRoles: ["ADMIN", "OPERADOR"],
+    updateRoles: ["ADMIN", "OPERADOR"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       { key: "nombre", label: "Nombre" },
@@ -165,6 +183,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Direcciones",
     path: "/addresses",
     endpoint: "/addresses",
+    roles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    createRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    updateRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    deleteRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
     columns: [
       { key: "id", label: "ID" },
       {
@@ -190,6 +212,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Cupones",
     path: "/coupons",
     endpoint: "/coupons",
+    roles: ["ADMIN", "OPERADOR"],
+    createRoles: ["ADMIN"],
+    updateRoles: ["ADMIN"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       { key: "codigo", label: "Codigo" },
@@ -214,6 +240,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Ventas",
     path: "/sales",
     endpoint: "/sales",
+    roles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    createRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    updateRoles: ["ADMIN", "OPERADOR"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       {
@@ -239,6 +269,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     path: "/sale-details",
     endpoint: "/sale-details",
     updateMethod: "PATCH",
+    roles: ["ADMIN", "OPERADOR"],
+    createRoles: ["ADMIN", "OPERADOR"],
+    updateRoles: ["ADMIN", "OPERADOR"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "id", label: "ID" },
       {
@@ -267,6 +301,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Resenas",
     path: "/reviews",
     endpoint: "/reviews",
+    roles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    createRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    updateRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "_id", label: "ID" },
       { key: "productId", label: "Producto ID" },
@@ -287,6 +325,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     path: "/nutrition-plans",
     endpoint: "/nutrition-plans",
     updateMethod: "PATCH",
+    roles: ["ADMIN", "OPERADOR"],
+    createRoles: ["ADMIN", "OPERADOR"],
+    updateRoles: ["ADMIN", "OPERADOR"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "_id", label: "ID" },
       { key: "userId", label: "Usuario ID" },
@@ -306,6 +348,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Historial",
     path: "/history",
     endpoint: "/history",
+    roles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    createRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    updateRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
+    deleteRoles: ["ADMIN", "OPERADOR", "CLIENTE"],
     columns: [
       { key: "_id", label: "ID" },
       { key: "userId", label: "Usuario ID" },
@@ -322,6 +368,10 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     label: "Auth Logs",
     path: "/auth-logs",
     endpoint: "/auth-logs",
+    roles: ["ADMIN"],
+    createRoles: ["ADMIN"],
+    updateRoles: ["ADMIN"],
+    deleteRoles: ["ADMIN"],
     columns: [
       { key: "_id", label: "ID" },
       { key: "userId", label: "Usuario ID" },
@@ -341,41 +391,43 @@ export const navSections: NavSection[] = [
     header: "General",
     items: [
       { label: "Dashboard", path: "/dashboard" },
+      { label: "Mi Perfil", path: "/profile", roles: ["ADMIN", "OPERADOR", "CLIENTE"] },
       { label: "Usuarios", path: "/users", roles: ["ADMIN"] },
-      { label: "Direcciones", path: "/addresses", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
+      { label: "Direcciones", path: "/addresses", roles: ["ADMIN", "OPERADOR", "CLIENTE"] },
     ],
   },
   {
     header: "Catalogo",
     items: [
-      { label: "Categorias", path: "/categories", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
-      { label: "Productos", path: "/products", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
-      { label: "Proveedores", path: "/suppliers", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
-      { label: "Inventario", path: "/inventory", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
+      { label: "Categorias", path: "/categories", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Productos", path: "/products", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Proveedores", path: "/suppliers", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Inventario", path: "/inventory", roles: ["ADMIN", "OPERADOR"] },
     ],
   },
   {
     header: "Ventas",
     items: [
-      { label: "Carrito", path: "/cart", roles: ["ADMIN", "EDITOR", "OPERADOR", "CLIENTE"] },
-      { label: "Ventas", path: "/sales", roles: ["ADMIN", "EDITOR", "OPERADOR", "CLIENTE"] },
-      { label: "Detalles Venta", path: "/sale-details", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
-      { label: "Cupones", path: "/coupons", roles: ["ADMIN", "EDITOR"] },
+      { label: "Carrito", path: "/cart", roles: ["ADMIN", "OPERADOR", "CLIENTE"] },
+      { label: "Ventas", path: "/sales", roles: ["ADMIN", "OPERADOR", "CLIENTE"] },
+      { label: "Detalles Venta", path: "/sale-details", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Cupones", path: "/coupons", roles: ["ADMIN", "OPERADOR"] },
     ],
   },
   {
     header: "Clientes",
     items: [
-      { label: "Resenas", path: "/reviews", roles: ["ADMIN", "EDITOR", "OPERADOR", "CLIENTE"] },
-      { label: "Planes Nutricionales", path: "/nutrition-plans", roles: ["ADMIN", "EDITOR", "OPERADOR"] },
-      { label: "Historial", path: "/history", roles: ["ADMIN", "EDITOR", "OPERADOR", "CLIENTE"] },
+      { label: "Pacientes", path: "/patients", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Resenas", path: "/reviews", roles: ["ADMIN", "OPERADOR", "CLIENTE"] },
+      { label: "Planes Nutricionales", path: "/nutrition-plans", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Historial", path: "/history", roles: ["ADMIN", "OPERADOR", "CLIENTE"] },
     ],
   },
   {
     header: "Sistema",
     items: [
       { label: "Auth Logs", path: "/auth-logs", roles: ["ADMIN"] },
-      { label: "Correo", path: "/mail", roles: ["ADMIN", "EDITOR"] },
+      { label: "Correo", path: "/mail", roles: ["ADMIN"] },
     ],
   },
 ];

@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:3000";
+const RAW_BASE_URL =
+  (import.meta as any).env?.VITE_API_URL || "http://localhost:3000";
+const BASE_URL = RAW_BASE_URL.replace(/\/+$/, "");
 
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem("token");

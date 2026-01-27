@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Box,
   Button,
   Card,
   CardContent,
@@ -20,7 +19,11 @@ import { api } from "../api/https";
 type CartItem = { product_id: string; cantidad: number };
 
 export default function CartPage() {
-  const [cart, setCart] = useState<{ user_id?: string; items?: CartItem[] } | null>(null);
+  const [cart, setCart] = useState<{
+    user_id?: string;
+    items?: CartItem[];
+    total?: number;
+  } | null>(null);
   const [productId, setProductId] = useState("");
   const [cantidad, setCantidad] = useState("1");
   const [loading, setLoading] = useState(false);
@@ -166,15 +169,13 @@ export default function CartPage() {
         </CardContent>
       </Card>
 
-      {cart && (
+      {cart && cart.total !== undefined && (
         <Card>
           <CardContent>
             <Typography variant="subtitle2" fontWeight={600}>
-              Raw data
+              Total
             </Typography>
-            <Box component="pre" sx={{ m: 0, whiteSpace: "pre-wrap" }}>
-              {JSON.stringify(cart, null, 2)}
-            </Box>
+            <Typography variant="h6">${cart.total}</Typography>
           </CardContent>
         </Card>
       )}

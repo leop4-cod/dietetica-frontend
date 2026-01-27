@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { api } from "../api/https";
+import { hasRole } from "../auth/auth";
 
 export default function InventoryPage() {
   const [productId, setProductId] = useState("");
@@ -18,6 +19,7 @@ export default function InventoryPage() {
   const [inventory, setInventory] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const canUpdate = hasRole(["ADMIN", "OPERADOR"]);
 
   const loadInventory = async () => {
     if (!productId) return;
@@ -86,10 +88,15 @@ export default function InventoryPage() {
                 onChange={(event) => setStock(event.target.value)}
                 fullWidth
               />
-              <Button variant="contained" onClick={updateStock} disabled={loading}>
+              <Button variant="contained" onClick={updateStock} disabled={loading || !canUpdate}>
                 Actualizar stock
               </Button>
             </Stack>
+            {!canUpdate && (
+              <Typography variant="caption" color="text.secondary">
+                Solo administradores y empleados pueden actualizar stock.
+              </Typography>
+            )}
           </Stack>
         </CardContent>
       </Card>

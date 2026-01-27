@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { login } from "../auth/auth";
 import {
   Alert,
@@ -102,6 +102,9 @@ export default function Login() {
 
                 <Button type="submit" variant="contained" size="large" disabled={loading}>
                   {loading ? <CircularProgress size={22} /> : "Entrar"}
+                </Button>
+                <Button component={NavLink} to="/register">
+                  Crear cuenta
                 </Button>
               </Box>
             </CardContent>

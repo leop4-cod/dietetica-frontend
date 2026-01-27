@@ -35,7 +35,10 @@ export default function PublicLayout() {
           <NavLink to="/contacto" style={linkStyles}>
             Contacto
           </NavLink>
-          <Button variant="contained" component={NavLink} to="/login" sx={{ ml: 2 }}>
+          <Button variant="text" component={NavLink} to="/register" sx={{ ml: 2 }}>
+            Registrarse
+          </Button>
+          <Button variant="contained" component={NavLink} to="/login" sx={{ ml: 1 }}>
             Ingresar
           </Button>
         </Toolbar>

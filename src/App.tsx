@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AppShell from "./layouts/AppShell";
@@ -8,6 +9,8 @@ import { resourceConfigs } from "./resources/config";
 import InventoryPage from "./pages/Inventory";
 import CartPage from "./pages/Cart";
 import MailPage from "./pages/Mail";
+import PatientsPage from "./pages/Patients";
+import ProfilePage from "./pages/Profile";
 import PublicLayout from "./pages/public/PublicLayout";
 import Home from "./pages/public/Home";
 import About from "./pages/public/About";
@@ -25,6 +28,7 @@ export default function App() {
           <Route path="/contacto" element={<Contact />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           element={
             <ProtectedRoute>
@@ -48,7 +52,7 @@ export default function App() {
           <Route
             path="/inventory"
             element={
-              <ProtectedRoute roles={["ADMIN", "EDITOR", "OPERADOR"]}>
+              <ProtectedRoute roles={["ADMIN", "OPERADOR"]}>
                 <InventoryPage />
               </ProtectedRoute>
             }
@@ -56,7 +60,7 @@ export default function App() {
           <Route
             path="/cart"
             element={
-              <ProtectedRoute roles={["ADMIN", "EDITOR", "OPERADOR", "CLIENTE"]}>
+              <ProtectedRoute roles={["ADMIN", "OPERADOR", "CLIENTE"]}>
                 <CartPage />
               </ProtectedRoute>
             }
@@ -64,8 +68,24 @@ export default function App() {
           <Route
             path="/mail"
             element={
-              <ProtectedRoute roles={["ADMIN", "EDITOR"]}>
+              <ProtectedRoute roles={["ADMIN"]}>
                 <MailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute roles={["ADMIN", "OPERADOR", "CLIENTE"]}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patients"
+            element={
+              <ProtectedRoute roles={["ADMIN", "OPERADOR"]}>
+                <PatientsPage />
               </ProtectedRoute>
             }
           />

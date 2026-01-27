@@ -12,7 +12,7 @@ import {
   CardContent,
 } from "@mui/material";
 import { navSections } from "../resources/config";
-import { hasRole } from "../auth/auth";
+import { hasRole, normalizeRole } from "../auth/auth";
 
 export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -56,7 +56,9 @@ export default function Dashboard() {
                 <Typography variant="caption" color="text.secondary">
                   Rol
                 </Typography>
-                <Typography fontWeight={600}>{user?.rol ?? "-"}</Typography>
+                <Typography fontWeight={600}>
+                  {normalizeRole(user?.rol || user?.role)}
+                </Typography>
               </Box>
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }}>

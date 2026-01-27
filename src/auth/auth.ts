@@ -1,9 +1,18 @@
 import { api } from "../api/https";
 
-export type Role = "ADMIN" | "EDITOR" | "OPERADOR" | "CLIENTE";
+export type Role = "ADMIN" | "OPERADOR" | "CLIENTE";
 
 type LoginBody = { email: string; password: string };
 type LoginRes = { data: { access_token: string; user: any } };
+type RegisterBody = {
+  nombre: string;
+  email: string;
+  telefono: string;
+  password: string;
+  rol?: "admin" | "empleado" | "cliente";
+  codigo_secreto?: string;
+};
+type RegisterRes = { data: { message: string; user: any } };
 
 export async function login(body: LoginBody) {
   const res = await api<LoginRes>("/auth/login", {
@@ -13,6 +22,14 @@ export async function login(body: LoginBody) {
 
   localStorage.setItem("token", res.data.access_token);
   localStorage.setItem("user", JSON.stringify(res.data.user));
+  return res.data;
+}
+
+export async function register(body: RegisterBody) {
+  const res = await api<RegisterRes>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
   return res.data;
 }
 
@@ -39,8 +56,6 @@ export function normalizeRole(role?: string): Role {
       return "ADMIN";
     case "empleado":
       return "OPERADOR";
-    case "editor":
-      return "EDITOR";
     case "operador":
       return "OPERADOR";
     case "cliente":
