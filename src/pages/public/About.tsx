@@ -5,7 +5,7 @@ export default function About() {
     <Stack spacing={2}>
       <Typography variant="h4">Sobre nuestro proyecto</Typography>
       <Typography variant="body1" color="text.secondary">
-        Dietetica es una plataforma que conecta el cuidado nutricional con operaciones de venta
+        Nutrivida es una plataforma que conecta el cuidado nutricional con operaciones de venta
         eficientes. Centraliza inventario, proveedores y planes de alimentacion.
       </Typography>
       <Card>

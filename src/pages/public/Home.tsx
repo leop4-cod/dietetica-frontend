@@ -1,65 +1,58 @@
 import { Box, Button, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import LocalDiningIcon from "@mui/icons-material/LocalDining";
+import SpaIcon from "@mui/icons-material/Spa";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
-const highlights = [
-  {
-    title: "Nutricion personalizada",
-    body: "Planes alimenticios basados en objetivos y habitos reales.",
-  },
-  {
-    title: "Catalogo saludable",
-    body: "Productos naturales, suplementos y opciones funcionales.",
-  },
-  {
-    title: "Seguimiento simple",
-    body: "Historial y recomendaciones siempre disponibles.",
-  },
+const benefits = [
+  { icon: <LocalDiningIcon />, title: "Catalogo saludable", copy: "Productos seleccionados por nutricionistas." },
+  { icon: <SpaIcon />, title: "Planes personalizados", copy: "Estrategias practicas para tu objetivo." },
+  { icon: <FavoriteIcon />, title: "Seguimiento real", copy: "Acompanamiento y mejoras sostenibles." },
 ];
 
 export default function Home() {
   return (
-    <Stack spacing={4}>
-      <Box
-        sx={{
-          p: { xs: 3, md: 6 },
-          borderRadius: 4,
-          background:
-            "linear-gradient(120deg, rgba(15,118,110,0.12), rgba(245,158,11,0.1))",
-        }}
-      >
-        <Stack spacing={2} maxWidth={560}>
-          <Typography variant="h3">Bienestar diario en tu dietetica</Typography>
-          <Typography variant="body1" color="text.secondary">
-            Gestiona productos, ventas y planes nutricionales desde un solo panel. Para clientes,
-            una experiencia clara y ordenada.
-          </Typography>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <Button variant="contained" component={NavLink} to="/login">
-              Acceder al panel
-            </Button>
-            <Button variant="outlined" component={NavLink} to="/sobre">
-              Conocer mas
-            </Button>
+    <Box>
+      <Grid container spacing={6} alignItems="center">
+        <Grid item xs={12} md={6}>
+          <Stack spacing={3}>
+            <Typography variant="h3" fontWeight={800}>
+              Consulta Dietetica para una vida mas saludable
+            </Typography>
+            <Typography color="text.secondary">
+              Descubre productos, planes nutricionales y un equipo listo para ayudarte a mejorar tus habitos.
+            </Typography>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <Button variant="contained" component={NavLink} to="/catalog">
+                Ver catalogo
+              </Button>
+              <Button variant="outlined" component={NavLink} to="/login">
+                Iniciar sesion
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
-      </Box>
-
-      <Grid container spacing={2}>
-        {highlights.map((item) => (
-          <Grid key={item.title} size={{ xs: 12, md: 4 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" fontWeight={700}>
-                  {item.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.body}
-                </Typography>
-              </CardContent>
-            </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={2}>
+            {benefits.map((item) => (
+              <Grid item xs={12} sm={4} key={item.title}>
+                <Card>
+                  <CardContent>
+                    <Stack spacing={1} alignItems="center">
+                      {item.icon}
+                      <Typography fontWeight={700}>{item.title}</Typography>
+                      <Typography variant="body2" color="text.secondary" align="center">
+                        {item.copy}
+                      </Typography>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
+        </Grid>
       </Grid>
-    </Stack>
+    </Box>
   );
 }
+

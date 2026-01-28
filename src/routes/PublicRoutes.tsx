@@ -6,8 +6,8 @@ type Props = {
   children: ReactNode;
 };
 
-export default function ProtectedRoute({ children }: Props) {
+export default function PublicRoutes({ children }: Props) {
   const { token } = useAuth();
-  if (!token) return <Navigate to="/login" replace />;
+  if (token) return <Navigate to="/admin" replace />;
   return <>{children}</>;
 }

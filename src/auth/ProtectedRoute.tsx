@@ -1,6 +1,6 @@
-import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { useAuth } from "../auth/AuthContext";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 type Props = {
   children: ReactNode;
@@ -11,3 +11,4 @@ export default function ProtectedRoute({ children }: Props) {
   if (!token) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
+

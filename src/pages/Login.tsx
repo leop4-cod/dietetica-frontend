@@ -66,7 +66,7 @@ export default function Login() {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="h4">Dietetica Panel</Typography>
+              <Typography variant="h4">Nutrivida Panel</Typography>
               <Typography variant="body1" sx={{ opacity: 0.9 }}>
                 Gestion integral de ventas, catalogo, inventario y clientes en un solo lugar.
               </Typography>

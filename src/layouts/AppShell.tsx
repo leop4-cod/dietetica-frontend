@@ -42,7 +42,7 @@ export default function AppShell() {
       <Toolbar sx={{ px: 2, py: 2 }}>
         <Stack spacing={0.5}>
           <Typography variant="h6" fontWeight={700}>
-            Dietetica
+            Nutrivida
           </Typography>
           <Typography variant="caption" color="text.secondary">
             Panel de gestion
@@ -100,7 +100,7 @@ export default function AppShell() {
           )}
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h6" fontWeight={700}>
-              Panel Dietetica
+              Panel Nutrivida
             </Typography>
             <Typography variant="caption" sx={{ opacity: 0.9 }}>
               {user?.nombre ? `Bienvenido, ${user.nombre}` : "Sesion activa"}

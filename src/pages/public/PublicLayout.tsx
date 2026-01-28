@@ -4,46 +4,42 @@ import {
   Box,
   Button,
   Container,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
 
-const linkStyles = {
-  color: "inherit",
-  textDecoration: "none",
-  fontWeight: 600,
-  marginLeft: 16,
-};
-
 export default function PublicLayout() {
   return (
     <Box>
-      <AppBar position="sticky" color="transparent" elevation={0}>
-        <Toolbar sx={{ borderBottom: "1px solid rgba(148,163,184,0.2)" }}>
-          <Typography variant="h6" fontWeight={800} sx={{ flexGrow: 1 }}>
-            Dietetica
+      <AppBar position="sticky" elevation={0} color="transparent">
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Typography variant="h6" fontWeight={800}>
+            Nutrivida
           </Typography>
-          <NavLink to="/" style={linkStyles}>
-            Inicio
-          </NavLink>
-          <NavLink to="/sobre" style={linkStyles}>
-            Sobre
-          </NavLink>
-          <NavLink to="/servicios" style={linkStyles}>
-            Servicios
-          </NavLink>
-          <NavLink to="/contacto" style={linkStyles}>
-            Contacto
-          </NavLink>
-          <Button variant="text" component={NavLink} to="/register" sx={{ ml: 2 }}>
-            Registrarse
-          </Button>
-          <Button variant="contained" component={NavLink} to="/login" sx={{ ml: 1 }}>
-            Ingresar
-          </Button>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Button component={NavLink} to="/" color="inherit">
+              Home
+            </Button>
+            <Button component={NavLink} to="/catalogo" color="inherit">
+              Catalogo
+            </Button>
+            <Button component={NavLink} to="/contacto" color="inherit">
+              Contacto
+            </Button>
+            <Button component={NavLink} to="/registro" color="inherit">
+              Registrate
+            </Button>
+            <Button component={NavLink} to="/login-cliente" variant="contained">
+              Ingreso clientes
+            </Button>
+            <Button component={NavLink} to="/login-staff" variant="outlined">
+              Ingreso personal
+            </Button>
+          </Stack>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 5 }}>
         <Outlet />
       </Container>
     </Box>
