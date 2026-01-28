@@ -25,7 +25,7 @@ const drawerWidth = 260;
 
 const navItems = [
   { label: "Dashboard", path: "/admin/dashboard" },
-  { label: "Categorias", path: "/admin/categories" },
+  { label: "Categorías", path: "/admin/categories" },
   { label: "Productos", path: "/admin/products" },
 ];
 
@@ -38,7 +38,7 @@ export default function AdminLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login", { replace: true });
+    navigate("/login/admin", { replace: true });
   };
 
   return (
@@ -52,7 +52,7 @@ export default function AdminLayout() {
           )}
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h6" fontWeight={800}>
-              Consulta Dietetica
+              Nutrivida
             </Typography>
             <Typography variant="caption" sx={{ opacity: 0.85 }}>
               {user?.nombre ? `Hola, ${user.nombre}` : "Panel administrativo"}
@@ -80,7 +80,7 @@ export default function AdminLayout() {
         <Toolbar />
         <Box sx={{ px: 2, pt: 3 }}>
           <Typography variant="subtitle2" color="text.secondary">
-            Administracion
+            Administración
           </Typography>
         </Box>
         <Divider sx={{ my: 2 }} />
@@ -109,4 +109,3 @@ export default function AdminLayout() {
     </Box>
   );
 }
-

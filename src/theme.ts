@@ -4,24 +4,24 @@ const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#0F766E",
-      dark: "#0B4F4A",
-      light: "#14B8A6",
-      contrastText: "#F8FAFC",
+      main: "#2E7D6F",
+      dark: "#24685E",
+      light: "#A7D7C5",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "#F59E0B",
-      dark: "#B45309",
-      light: "#FCD34D",
-      contrastText: "#1F2937",
+      main: "#A7D7C5",
+      dark: "#7FB9A3",
+      light: "#DCEFE7",
+      contrastText: "#2E7D6F",
     },
     background: {
-      default: "#F6F4F0",
+      default: "#FAF8F3",
       paper: "#FFFFFF",
     },
     text: {
-      primary: "#0F172A",
-      secondary: "#475569",
+      primary: "#2B2B2B",
+      secondary: "#4A4A4A",
     },
   },
   shape: {
@@ -41,8 +41,9 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
+          backgroundColor: "#FAF8F3",
           backgroundImage:
-            "radial-gradient(circle at 10% 10%, rgba(20,184,166,0.12), transparent 40%), radial-gradient(circle at 90% 20%, rgba(245,158,11,0.12), transparent 45%)",
+            "radial-gradient(circle at 12% 8%, rgba(167,215,197,0.35), transparent 45%), radial-gradient(circle at 85% 15%, rgba(167,215,197,0.2), transparent 50%)",
           backgroundAttachment: "fixed",
         },
       },
@@ -50,36 +51,34 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background:
-            "linear-gradient(120deg, rgba(15,118,110,0.94), rgba(2,132,199,0.9))",
-          boxShadow: "0 18px 45px rgba(15, 23, 42, 0.18)",
-          borderBottom: "1px solid rgba(255,255,255,0.16)",
-          backdropFilter: "blur(10px)",
+          backgroundColor: "#2E7D6F",
+          color: "#FFFFFF",
+          boxShadow: "0 12px 28px rgba(46, 125, 111, 0.28)",
+          borderBottom: "1px solid rgba(255,255,255,0.12)",
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          background:
-            "linear-gradient(160deg, rgba(15,118,110,0.08), rgba(226,232,240,0.7))",
-          borderRight: "1px solid rgba(148,163,184,0.25)",
+          background: "linear-gradient(160deg, rgba(167,215,197,0.18), rgba(250,248,243,0.9))",
+          borderRight: "1px solid rgba(46,125,111,0.12)",
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          border: "1px solid rgba(148, 163, 184, 0.22)",
-          boxShadow: "0 16px 40px rgba(15, 23, 42, 0.08)",
+          border: "1px solid rgba(46, 125, 111, 0.12)",
+          boxShadow: "0 12px 24px rgba(46, 125, 111, 0.12)",
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          border: "1px solid rgba(148, 163, 184, 0.18)",
-          boxShadow: "0 20px 45px rgba(15, 23, 42, 0.08)",
+          border: "1px solid rgba(46, 125, 111, 0.1)",
+          boxShadow: "0 16px 30px rgba(46, 125, 111, 0.12)",
         },
       },
     },
@@ -89,12 +88,31 @@ const theme = createTheme({
           borderRadius: 999,
           padding: "10px 22px",
         },
+        containedPrimary: {
+          backgroundColor: "#2E7D6F",
+          "&:hover": {
+            backgroundColor: "#24685E",
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        notchedOutline: {
+          borderColor: "rgba(46, 125, 111, 0.28)",
+        },
+        root: {
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#2E7D6F",
+            boxShadow: "0 0 0 3px rgba(46, 125, 111, 0.15)",
+          },
+        },
       },
     },
     MuiTableHead: {
       styleOverrides: {
         root: {
-          background: "rgba(15, 118, 110, 0.08)",
+          background: "rgba(167, 215, 197, 0.3)",
         },
       },
     },
@@ -102,7 +120,7 @@ const theme = createTheme({
       styleOverrides: {
         head: {
           fontWeight: 700,
-          color: "#0F172A",
+          color: "#2B2B2B",
         },
       },
     },

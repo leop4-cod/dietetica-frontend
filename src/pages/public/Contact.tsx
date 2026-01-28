@@ -8,13 +8,13 @@ export default function Contact() {
           Contacto
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 3 }}>
-          Escribenos para recibir mas informacion o agendar una consulta personalizada.
+          Escríbenos para recibir más información o agendar una consulta personalizada.
         </Typography>
         <Card>
           <CardContent>
             <Stack spacing={2}>
               <TextField label="Nombre completo" fullWidth />
-              <TextField label="Correo electronico" type="email" fullWidth />
+              <TextField label="Correo electrónico" type="email" fullWidth />
               <TextField label="Mensaje" multiline minRows={4} fullWidth />
               <Button variant="contained">Enviar mensaje</Button>
             </Stack>
@@ -26,15 +26,15 @@ export default function Contact() {
           <CardContent>
             <Stack spacing={2}>
               <Typography variant="h6" fontWeight={700}>
-                Consulta Dietetica
+                Nutrivida
               </Typography>
-              <Typography color="text.secondary">Av. Salud 123, Ciudad Saludable</Typography>
-              <Typography color="text.secondary">+54 11 5555-5555</Typography>
-              <Typography color="text.secondary">hola@consultadietetica.com</Typography>
+              <Typography color="text.secondary">Quito, Ecuador</Typography>
+              <Typography color="text.secondary">0995974161</Typography>
+              <Typography color="text.secondary">contacto@nutrivida.ec</Typography>
               <Box sx={{ mt: 2 }}>
                 <Typography fontWeight={700}>Horarios</Typography>
-                <Typography color="text.secondary">Lunes a Viernes: 9 a 18 hs</Typography>
-                <Typography color="text.secondary">Sabados: 9 a 13 hs</Typography>
+                <Typography color="text.secondary">Lunes a Viernes: 8h00 a 17h00</Typography>
+                <Typography color="text.secondary">Sábados: 9h00 a 13h00</Typography>
               </Box>
             </Stack>
           </CardContent>
@@ -43,4 +43,3 @@ export default function Contact() {
     </Grid>
   );
 }
-

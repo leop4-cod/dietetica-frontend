@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
-import type { Role } from "../api/auth.service";
 import { hasRole, useAuth } from "./AuthContext";
+import type { Role } from "./permissions";
 
 type Props = {
   children: ReactNode;
@@ -9,11 +9,10 @@ type Props = {
   redirectTo?: string;
 };
 
-export default function RoleGuard({ children, roles, redirectTo = "/" }: Props) {
+export default function RoleGuard({ children, roles, redirectTo = "/no-autorizado" }: Props) {
   const { role } = useAuth();
   if (!hasRole(roles, role)) {
     return <Navigate to={redirectTo} replace />;
   }
   return <>{children}</>;
 }
-

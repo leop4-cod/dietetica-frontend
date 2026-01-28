@@ -91,7 +91,7 @@ export default function PatientsPage() {
               required
             />
             <TextField
-              label="Contrasena"
+              label="Contraseña"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               type="password"

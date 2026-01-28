@@ -91,7 +91,7 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
   },
   categories: {
     key: "categories",
-    label: "Categorias",
+    label: "Categorías",
     path: "/categories",
     endpoint: "/categories",
     roles: ["ADMIN", "OPERADOR"],
@@ -101,11 +101,11 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     columns: [
       { key: "id", label: "ID" },
       { key: "nombre", label: "Nombre" },
-      { key: "descripcion", label: "Descripcion" },
+      { key: "descripcion", label: "Descripción" },
     ],
     fields: [
       { name: "nombre", label: "Nombre", required: true },
-      { name: "descripcion", label: "Descripcion", type: "textarea" },
+      { name: "descripcion", label: "Descripción", type: "textarea" },
     ],
   },
   products: {
@@ -128,7 +128,7 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
       },
       {
         key: "category.nombre",
-        label: "Categoria",
+        label: "Categoría",
         getValue: (row) => row?.category?.nombre ?? "-",
       },
       {
@@ -140,12 +140,12 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     ],
     fields: [
       { name: "nombre", label: "Nombre", required: true },
-      { name: "descripcion", label: "Descripcion", type: "textarea", required: true },
+      { name: "descripcion", label: "Descripción", type: "textarea", required: true },
       { name: "precio", label: "Precio", type: "number", required: true },
       { name: "stock", label: "Stock", type: "number", source: "inventory.stock" },
       {
         name: "categoria_id",
-        label: "Categoria ID",
+        label: "Categoría ID",
         type: "number",
         required: true,
         source: "category.id",
@@ -397,9 +397,9 @@ export const navSections: NavSection[] = [
     ],
   },
   {
-    header: "Catalogo",
+    header: "Catálogo",
     items: [
-      { label: "Categorias", path: "/categories", roles: ["ADMIN", "OPERADOR"] },
+      { label: "Categorías", path: "/categories", roles: ["ADMIN", "OPERADOR"] },
       { label: "Productos", path: "/products", roles: ["ADMIN", "OPERADOR"] },
       { label: "Proveedores", path: "/suppliers", roles: ["ADMIN", "OPERADOR"] },
       { label: "Inventario", path: "/inventory", roles: ["ADMIN", "OPERADOR"] },

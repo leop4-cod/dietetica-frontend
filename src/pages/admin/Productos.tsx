@@ -204,7 +204,7 @@ export default function Productos() {
       return;
     }
     if (!form.descripcion.trim()) {
-      setSnackbar({ message: "La descripcion es obligatoria.", type: "error" });
+        setSnackbar({ message: "La descripción es obligatoria.", type: "error" });
       return;
     }
     if (!form.precio.trim()) {
@@ -212,7 +212,7 @@ export default function Productos() {
       return;
     }
     if (!form.categoria_id.trim()) {
-      setSnackbar({ message: "La categoria es obligatoria.", type: "error" });
+        setSnackbar({ message: "La categoría es obligatoria.", type: "error" });
       return;
     }
     setSaving(true);
@@ -288,7 +288,7 @@ export default function Productos() {
             Productos
           </Typography>
           <Typography color="text.secondary">
-            Gestiona tu catalogo con permisos por rol.
+            Gestiona tu catálogo con permisos por rol.
           </Typography>
         </Box>
         {canCreate && (
@@ -319,7 +319,7 @@ export default function Productos() {
               fullWidth
             />
             <TextField
-              label="Descripcion"
+              label="Descripción"
               value={form.descripcion}
               onChange={(event) =>
                 setForm((prev) => ({ ...prev, descripcion: event.target.value }))
@@ -343,7 +343,7 @@ export default function Productos() {
               fullWidth
             />
             <TextField
-              label="Categoria ID"
+              label="Categoría ID"
               value={form.categoria_id}
               onChange={(event) =>
                 setForm((prev) => ({ ...prev, categoria_id: event.target.value }))
@@ -407,7 +407,7 @@ export default function Productos() {
       <ConfirmDialog
         open={confirmOpen}
         title="Eliminar producto"
-        description="Esta accion no se puede deshacer."
+        description="Esta acción no se puede deshacer."
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
         confirmText="Eliminar"

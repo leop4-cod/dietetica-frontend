@@ -3,10 +3,10 @@ import { Grid, Card, CardContent, Stack, Typography } from "@mui/material";
 const services = [
   {
     title: "Planes nutricionales",
-    detail: "Programas segun objetivo, calorias y recomendaciones.",
+    detail: "Programas según objetivo, calorías y recomendaciones.",
   },
   {
-    title: "Gestion de inventario",
+    title: "Gestión de inventario",
     detail: "Stock actualizado por producto y alertas tempranas.",
   },
   {
@@ -20,8 +20,8 @@ export default function Services() {
     <Stack spacing={3}>
       <Typography variant="h4">Servicios</Typography>
       <Typography variant="body1" color="text.secondary">
-        Herramientas pensadas para dieteticas modernas, desde el control del catalogo hasta la
-        atencion del cliente.
+        Herramientas pensadas para dietéticas modernas, desde el control del catálogo hasta la
+        atención del cliente.
       </Typography>
       <Grid container spacing={2}>
         {services.map((service) => (

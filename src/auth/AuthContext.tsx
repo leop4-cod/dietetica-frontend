@@ -1,14 +1,19 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { login as loginRequest } from "../api/auth.service";
-import type { User, Role } from "../api/auth.service";
+import type { User } from "../api/auth.service";
 import { STORAGE_TOKEN_KEY, STORAGE_USER_KEY } from "../api/axios";
+import { can, normalizeRole, type Role } from "./permissions";
 
 type AuthContextValue = {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (
+    email: string,
+    password: string,
+    mode?: "cliente" | "admin"
+  ) => Promise<Role | null>;
   logout: () => void;
   role: Role | null;
 };
@@ -25,15 +30,6 @@ const loadFromStorage = () => {
   } catch {
     return { token: null, user: null };
   }
-};
-
-const normalizeRole = (role?: string): Role | null => {
-  if (!role) return null;
-  const normalized = role.toLowerCase();
-  if (normalized === "admin") return "admin";
-  if (normalized === "empleado") return "empleado";
-  if (normalized === "cliente") return "cliente";
-  return null;
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -56,14 +52,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, mode?: "cliente" | "admin") => {
     setLoading(true);
     try {
       const data = await loginRequest({ email, password });
       if (!data.access_token) {
         throw new Error("No recibimos el token de acceso.");
       }
+      const normalizedRole = normalizeRole(data.user?.role ?? (data.user as any)?.rol);
+      if (mode === "admin" && !can(normalizedRole, "view")) {
+        throw new Error("No autorizado");
+      }
       persistSession(data.access_token, data.user);
+      return normalizedRole;
     } finally {
       setLoading(false);
     }
@@ -73,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearSession();
   };
 
-  const role = useMemo(() => normalizeRole(user?.role), [user]);
+  const role = useMemo(() => normalizeRole(user?.role ?? (user as any)?.rol), [user]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

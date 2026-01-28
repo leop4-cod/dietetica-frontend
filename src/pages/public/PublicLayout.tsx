@@ -12,29 +12,29 @@ import {
 export default function PublicLayout() {
   return (
     <Box>
-      <AppBar position="sticky" elevation={0} color="transparent">
+      <AppBar position="sticky" elevation={0} color="primary">
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Typography variant="h6" fontWeight={800}>
             Nutrivida
           </Typography>
           <Stack direction="row" spacing={1} alignItems="center">
             <Button component={NavLink} to="/" color="inherit">
-              Home
+              Inicio
             </Button>
             <Button component={NavLink} to="/catalogo" color="inherit">
-              Catalogo
+              Catálogo
             </Button>
             <Button component={NavLink} to="/contacto" color="inherit">
               Contacto
             </Button>
             <Button component={NavLink} to="/registro" color="inherit">
-              Registrate
+              Regístrate
             </Button>
             <Button component={NavLink} to="/login-cliente" variant="contained">
-              Ingreso clientes
+              Ingreso de clientes
             </Button>
             <Button component={NavLink} to="/login-staff" variant="outlined">
-              Ingreso personal
+              Ingreso del personal
             </Button>
           </Stack>
         </Toolbar>

@@ -109,7 +109,7 @@ export default function ProfilePage() {
             Mi perfil
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Actualiza tu informacion personal.
+            Actualiza tu información personal.
           </Typography>
         </CardContent>
       </Card>
@@ -145,7 +145,7 @@ export default function ProfilePage() {
               disabled={loading}
             />
             <TextField
-              label="Nueva contrasena"
+              label="Nueva contraseña"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               type="password"

@@ -1,7 +1,16 @@
 import { useState } from "react";
-import { Box, Drawer, IconButton, Toolbar, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  Drawer,
+  IconButton,
+  Link,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import { useAuth } from "../auth/AuthContext";
@@ -14,10 +23,11 @@ export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
-    navigate("/login", { replace: true });
+    navigate("/login/admin", { replace: true });
   };
 
   return (
@@ -49,6 +59,24 @@ export default function AdminLayout() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <Toolbar />
+        <Breadcrumbs sx={{ mb: 2 }}>
+          <Link component={NavLink} to="/admin/dashboard" underline="hover" color="inherit">
+            Admin
+          </Link>
+          {location.pathname
+            .replace("/admin", "")
+            .split("/")
+            .filter(Boolean)
+            .map((segment, index, arr) => {
+              const to = `/admin/${arr.slice(0, index + 1).join("/")}`;
+              const label = segment.replace(/-/g, " ");
+              return (
+                <Link key={to} component={NavLink} to={to} underline="hover" color="inherit">
+                  {label}
+                </Link>
+              );
+            })}
+        </Breadcrumbs>
         <Outlet />
       </Box>
     </Box>

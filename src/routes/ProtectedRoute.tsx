@@ -8,6 +8,6 @@ type Props = {
 
 export default function ProtectedRoute({ children }: Props) {
   const { token } = useAuth();
-  if (!token) return <Navigate to="/login" replace />;
+  if (!token) return <Navigate to="/login/admin" replace />;
   return <>{children}</>;
 }

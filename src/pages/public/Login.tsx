@@ -34,7 +34,7 @@ export default function Login() {
         <CardContent>
           <Stack spacing={3} component="form" onSubmit={handleSubmit}>
             <Typography variant="h5" fontWeight={800}>
-              Iniciar sesion
+              Iniciar sesión
             </Typography>
             <TextField
               label="Correo"
@@ -45,7 +45,7 @@ export default function Login() {
               required
             />
             <TextField
-              label="Contrasena"
+              label="Contraseña"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -69,4 +69,3 @@ export default function Login() {
     </Box>
   );
 }
-

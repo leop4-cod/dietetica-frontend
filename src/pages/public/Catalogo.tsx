@@ -29,15 +29,15 @@ export default function Catalogo() {
   return (
     <Box>
       <Typography variant="h4" fontWeight={800} gutterBottom>
-        Catalogo publico
+        Catálogo público
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
         Este listado se alimenta desde tu backend. Usa el panel admin para gestionar
-        productos y categorias.
+        productos y categorías.
       </Typography>
       {!token && (
         <Alert severity="info">
-          Tu backend protege el endpoint de productos. Inicia sesion para ver el catalogo.
+          Tu backend protege el endpoint de productos. Inicia sesión para ver el catálogo.
         </Alert>
       )}
       {error && <Alert severity="error">{error}</Alert>}

@@ -1,38 +1,32 @@
 import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
+import RoleBadge from "./RoleBadge";
 import { useAuth } from "../auth/AuthContext";
 
-export default function Navbar() {
-  const { token, role } = useAuth();
-  const canAccessAdmin = role === "admin" || role === "empleado";
+type Props = {
+  onLogout: () => void;
+};
+
+export default function Navbar({ onLogout }: Props) {
+  const { user, role } = useAuth();
 
   return (
-    <AppBar position="sticky" color="transparent" elevation={0}>
-      <Toolbar sx={{ gap: 2 }}>
-        <Typography variant="h6" fontWeight={800} component={NavLink} to="/" sx={{ textDecoration: "none", color: "inherit" }}>
-          Consulta Dietetica
-        </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ display: { xs: "none", md: "flex" } }}>
-          <Button component={NavLink} to="/catalog">
-            Catalogo
-          </Button>
-          <Button component={NavLink} to="/plans">
-            Planes
-          </Button>
-          <Button component={NavLink} to="/contact">
-            Contacto
+    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <Toolbar>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" fontWeight={800}>
+            Nutrivida Admin
+          </Typography>
+          <Typography variant="caption" sx={{ opacity: 0.85 }}>
+            {user?.nombre ? `Hola, ${user.nombre}` : "Panel administrativo"}
+          </Typography>
+        </Box>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <RoleBadge role={role ?? undefined} />
+          <Button color="inherit" startIcon={<LogoutIcon />} onClick={onLogout}>
+            Salir
           </Button>
         </Stack>
-        {token && canAccessAdmin ? (
-          <Button variant="contained" component={NavLink} to="/admin/dashboard">
-            Ir al panel
-          </Button>
-        ) : (
-          <Button variant="contained" component={NavLink} to="/login">
-            Iniciar sesion
-          </Button>
-        )}
       </Toolbar>
     </AppBar>
   );

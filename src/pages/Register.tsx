@@ -42,7 +42,7 @@ export default function Register() {
         rol,
         codigo_secreto: rol === "cliente" ? undefined : codigoSecreto || undefined,
       });
-      setSuccess("Usuario registrado. Ahora puedes iniciar sesion.");
+      setSuccess("Usuario registrado. Ahora puedes iniciar sesión.");
       setNombre("");
       setEmail("");
       setTelefono("");
@@ -128,7 +128,7 @@ export default function Register() {
                   required
                 />
                 <TextField
-                  label="Contrasena"
+                  label="Contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   type="password"

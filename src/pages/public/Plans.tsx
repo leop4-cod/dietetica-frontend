@@ -4,7 +4,7 @@ const plans = [
   {
     name: "Equilibrio Diario",
     price: "$29/mes",
-    description: "Plan base para mejorar energia y habitos con seguimiento mensual.",
+    description: "Plan base para mejorar energía y hábitos con seguimiento mensual.",
   },
   {
     name: "Metas Activas",
@@ -51,4 +51,3 @@ export default function Plans() {
     </Box>
   );
 }
-

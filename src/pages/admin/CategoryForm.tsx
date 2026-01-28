@@ -34,7 +34,7 @@ export default function CategoryForm({ open, initialData, loading, onClose, onSa
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{initialData ? "Editar categoria" : "Nueva categoria"}</DialogTitle>
+      <DialogTitle>{initialData ? "Editar categoría" : "Nueva categoría"}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
@@ -45,7 +45,7 @@ export default function CategoryForm({ open, initialData, loading, onClose, onSa
             required
           />
           <TextField
-            label="Descripcion"
+            label="Descripción"
             value={descripcion}
             onChange={(event) => setDescripcion(event.target.value)}
             fullWidth
@@ -63,4 +63,3 @@ export default function CategoryForm({ open, initialData, loading, onClose, onSa
     </Dialog>
   );
 }
-

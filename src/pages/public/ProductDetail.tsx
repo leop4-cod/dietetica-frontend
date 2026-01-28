@@ -4,7 +4,6 @@ import { Alert, Box, Card, CardContent, Snackbar, Stack, Typography } from "@mui
 import { getProduct } from "../../api/products.service";
 import type { Product } from "../../types/product";
 import { getApiErrorMessage } from "../../api/axios";
-import Loader from "../../components/Loader";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -33,7 +32,15 @@ export default function ProductDetail() {
     fetchProduct();
   }, [id]);
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <Box sx={{ py: 6 }}>
+        <Typography align="center" color="text.secondary">
+          Cargando detalle...
+        </Typography>
+      </Box>
+    );
+  }
 
   if (!product) {
     return (
@@ -52,20 +59,18 @@ export default function ProductDetail() {
       </Typography>
       <Card>
         <CardContent>
-          <Typography color="text.secondary">{product.descripcion || "Sin descripcion."}</Typography>
+          <Typography color="text.secondary">
+            {product.descripcion || "Sin descripción."}
+          </Typography>
           <Typography sx={{ mt: 2 }} fontWeight={700}>
             {product.precio ? `$${product.precio}` : "Precio a consultar"}
           </Typography>
           <Typography sx={{ mt: 1 }} variant="body2" color="text.secondary">
-            Categoria: {product.categoria?.nombre ?? product.category?.nombre ?? "Sin categoria"}
+            Categoría: {product.categoria?.nombre ?? product.category?.nombre ?? "Sin categoría"}
           </Typography>
         </CardContent>
       </Card>
-      <Snackbar
-        open={Boolean(snackbar)}
-        autoHideDuration={5000}
-        onClose={() => setSnackbar(null)}
-      >
+      <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
         {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
       </Snackbar>
     </Stack>

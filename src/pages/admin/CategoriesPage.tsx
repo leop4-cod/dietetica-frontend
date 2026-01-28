@@ -73,7 +73,7 @@ export default function CategoriesPage() {
       },
       {
         field: "descripcion",
-        headerName: "Descripcion",
+        headerName: "Descripción",
         flex: 1,
         valueGetter: ({ row }) => row.descripcion ?? "-",
       },
@@ -144,10 +144,10 @@ export default function CategoriesPage() {
     try {
       if (selected?.id) {
         await updateCategory(selected.id, payload);
-        setSnackbar({ message: "Categoria actualizada.", type: "success" });
+        setSnackbar({ message: "Categoría actualizada.", type: "success" });
       } else {
         await createCategory(payload);
-        setSnackbar({ message: "Categoria creada.", type: "success" });
+        setSnackbar({ message: "Categoría creada.", type: "success" });
       }
       setFormOpen(false);
       fetchCategories();
@@ -167,7 +167,7 @@ export default function CategoriesPage() {
     setSaving(true);
     try {
       await deleteCategory(selected.id);
-      setSnackbar({ message: "Categoria eliminada.", type: "success" });
+      setSnackbar({ message: "Categoría eliminada.", type: "success" });
       setConfirmOpen(false);
       fetchCategories();
     } catch (error) {
@@ -182,13 +182,13 @@ export default function CategoriesPage() {
       <Stack direction={{ xs: "column", md: "row" }} spacing={2} justifyContent="space-between">
         <Box>
           <Typography variant="h4" fontWeight={800}>
-            Categorias
+            Categorías
           </Typography>
-          <Typography color="text.secondary">Ordena las categorias visibles.</Typography>
+          <Typography color="text.secondary">Ordena las categorías visibles.</Typography>
         </Box>
         {canCreate && (
           <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
-            Nueva categoria
+            Nueva categoría
           </Button>
         )}
       </Stack>
@@ -198,7 +198,7 @@ export default function CategoriesPage() {
           value={search}
           onChange={setSearch}
           onSearch={() => setPaginationModel((prev) => ({ ...prev, page: 0 }))}
-          placeholder="Buscar categoria"
+          placeholder="Buscar categoría"
         />
       </Stack>
 
@@ -228,7 +228,7 @@ export default function CategoriesPage() {
       <ConfirmDialog
         open={confirmOpen}
         title="Eliminar categoria"
-        description="Esta accion no se puede deshacer."
+        description="Esta acción no se puede deshacer."
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
         confirmText="Eliminar"

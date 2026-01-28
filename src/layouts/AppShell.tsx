@@ -103,7 +103,7 @@ export default function AppShell() {
               Panel Nutrivida
             </Typography>
             <Typography variant="caption" sx={{ opacity: 0.9 }}>
-              {user?.nombre ? `Bienvenido, ${user.nombre}` : "Sesion activa"}
+              {user?.nombre ? `Bienvenido, ${user.nombre}` : "Sesión activa"}
             </Typography>
           </Box>
           <Stack direction="row" spacing={1} alignItems="center">

@@ -41,8 +41,7 @@ export default function Login() {
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
-        background:
-          "linear-gradient(120deg, rgba(15,118,110,0.12), rgba(245,158,11,0.12))",
+        background: "linear-gradient(120deg, rgba(46,125,111,0.12), rgba(167,215,197,0.3))",
         py: 6,
       }}
     >
@@ -57,8 +56,7 @@ export default function Login() {
             <Box
               sx={{
                 p: { xs: 3, md: 5 },
-                background:
-                  "linear-gradient(135deg, rgba(15,118,110,0.9), rgba(2,132,199,0.9))",
+                background: "linear-gradient(135deg, rgba(46,125,111,0.95), rgba(36,104,94,0.95))",
                 color: "white",
                 display: "flex",
                 flexDirection: "column",
@@ -68,16 +66,16 @@ export default function Login() {
             >
               <Typography variant="h4">Nutrivida Panel</Typography>
               <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                Gestion integral de ventas, catalogo, inventario y clientes en un solo lugar.
+                Gestión integral de ventas, catálogo, inventario y clientes en un solo lugar.
               </Typography>
               <Divider sx={{ borderColor: "rgba(255,255,255,0.3)" }} />
               <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                Acceso seguro para administracion y operaciones.
+                Acceso seguro para administración y operaciones.
               </Typography>
             </Box>
             <CardContent sx={{ p: { xs: 3, md: 5 } }}>
               <Typography variant="h5" fontWeight={700} gutterBottom>
-                Iniciar sesion
+                Iniciar sesión
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Ingresa tus credenciales para continuar.
@@ -85,13 +83,13 @@ export default function Login() {
 
               <Box component="form" onSubmit={onSubmit} sx={{ display: "grid", gap: 2, mt: 3 }}>
                 <TextField
-                  label="Email"
+                  label="Correo electrónico"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   fullWidth
                 />
                 <TextField
-                  label="Contrasena"
+                  label="Contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   type="password"
@@ -114,3 +112,4 @@ export default function Login() {
     </Box>
   );
 }
+

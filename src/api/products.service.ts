@@ -7,17 +7,10 @@ export type ListProductsParams = {
   page?: number;
   limit?: number;
   search?: string;
-  categoryId?: number | string;
 };
 
 export async function listProducts(params?: ListProductsParams): Promise<Paginated<Product>> {
-  const query: Record<string, string | number | undefined> = { ...params };
-  if (params?.categoryId !== undefined) {
-    query.categoryId = params.categoryId;
-    query.categoriaId = params.categoryId as any;
-    query.categoria_id = params.categoryId as any;
-  }
-  const response = await api.get<ApiResponse<Paginated<Product>>>("/products", { params: query });
+  const response = await api.get<ApiResponse<Paginated<Product>>>("/products", { params });
   return unwrapData(response);
 }
 

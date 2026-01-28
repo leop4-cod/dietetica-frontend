@@ -76,7 +76,7 @@ export default function Categorias() {
       },
       {
         field: "descripcion",
-        headerName: "Descripcion",
+        headerName: "Descripción",
         flex: 1,
         valueGetter: ({ row }) => row.descripcion ?? "-",
       },
@@ -156,10 +156,10 @@ export default function Categorias() {
       };
       if (selected && getRowId(selected)) {
         await updateCategory(getRowId(selected), payload);
-        setSnackbar({ message: "Categoria actualizada.", type: "success" });
+        setSnackbar({ message: "Categoría actualizada.", type: "success" });
       } else {
         await createCategory(payload);
-        setSnackbar({ message: "Categoria creada.", type: "success" });
+        setSnackbar({ message: "Categoría creada.", type: "success" });
       }
       setFormOpen(false);
       fetchCategories();
@@ -179,7 +179,7 @@ export default function Categorias() {
     setSaving(true);
     try {
       await deleteCategory(getRowId(selected));
-      setSnackbar({ message: "Categoria eliminada.", type: "success" });
+      setSnackbar({ message: "Categoría eliminada.", type: "success" });
       setConfirmOpen(false);
       fetchCategories();
     } catch (err) {
@@ -194,15 +194,15 @@ export default function Categorias() {
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
         <Box>
           <Typography variant="h4" fontWeight={800}>
-            Categorias
+            Categorías
           </Typography>
           <Typography color="text.secondary">
-            Ordena las categorias visibles en tu catalogo.
+            Ordena las categorías visibles en tu catálogo.
           </Typography>
         </Box>
         {canCreate && (
           <Button variant="contained" startIcon={<AddIcon />} onClick={openCreateDialog}>
-            Nueva categoria
+            Nueva categoría
           </Button>
         )}
       </Stack>
@@ -218,7 +218,7 @@ export default function Categorias() {
       />
 
       <Dialog open={formOpen} onClose={() => setFormOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{selected ? "Editar categoria" : "Nueva categoria"}</DialogTitle>
+        <DialogTitle>{selected ? "Editar categoría" : "Nueva categoría"}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
             <TextField
@@ -228,7 +228,7 @@ export default function Categorias() {
               fullWidth
             />
             <TextField
-              label="Descripcion"
+              label="Descripción"
               value={form.descripcion}
               onChange={(event) =>
                 setForm((prev) => ({ ...prev, descripcion: event.target.value }))
@@ -249,8 +249,8 @@ export default function Categorias() {
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Eliminar categoria"
-        description="Esta accion no se puede deshacer."
+        title="Eliminar categoría"
+        description="Esta acción no se puede deshacer."
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
         confirmText="Eliminar"

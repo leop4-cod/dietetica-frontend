@@ -79,7 +79,7 @@ export default function ProductForm({
             required
           />
           <TextField
-            label="Descripcion"
+            label="Descripción"
             value={descripcion}
             onChange={(event) => setDescripcion(event.target.value)}
             fullWidth
@@ -94,9 +94,9 @@ export default function ProductForm({
             fullWidth
           />
           <FormControl fullWidth required>
-            <InputLabel>Categoria</InputLabel>
+            <InputLabel>Categoría</InputLabel>
             <Select
-              label="Categoria"
+              label="Categoría"
               value={categoriaId}
               onChange={(event) => setCategoriaId(event.target.value)}
             >
@@ -118,3 +118,4 @@ export default function ProductForm({
     </Dialog>
   );
 }
+

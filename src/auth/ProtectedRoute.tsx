@@ -4,11 +4,11 @@ import { useAuth } from "./AuthContext";
 
 type Props = {
   children: ReactNode;
+  redirectTo?: string;
 };
 
-export default function ProtectedRoute({ children }: Props) {
+export default function ProtectedRoute({ children, redirectTo = "/login/cliente" }: Props) {
   const { token } = useAuth();
-  if (!token) return <Navigate to="/login" replace />;
+  if (!token) return <Navigate to={redirectTo} replace />;
   return <>{children}</>;
 }
-

@@ -108,7 +108,7 @@ export default function ProductsPage() {
       },
       {
         field: "categoria",
-        headerName: "Categoria",
+        headerName: "Categoría",
         width: 180,
         valueGetter: ({ row }) =>
           row.categoria?.nombre ?? row.category?.nombre ?? row.categoriaId ?? "-",
@@ -235,7 +235,7 @@ export default function ProductsPage() {
           <Typography variant="h4" fontWeight={800}>
             Productos
           </Typography>
-          <Typography color="text.secondary">Gestiona tu catalogo con permisos por rol.</Typography>
+          <Typography color="text.secondary">Gestiona tu catálogo con permisos por rol.</Typography>
         </Box>
         {canCreate && (
           <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
@@ -252,9 +252,9 @@ export default function ProductsPage() {
           placeholder="Buscar producto"
         />
         <FormControl sx={{ minWidth: 220 }} size="small">
-          <InputLabel>Categoria</InputLabel>
+          <InputLabel>Categoría</InputLabel>
           <Select
-            label="Categoria"
+            label="Categoría"
             value={categoryFilter}
             onChange={(event) => {
               setCategoryFilter(event.target.value);
@@ -298,7 +298,7 @@ export default function ProductsPage() {
       <ConfirmDialog
         open={confirmOpen}
         title="Eliminar producto"
-        description="Esta accion no se puede deshacer."
+        description="Esta acción no se puede deshacer."
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
         confirmText="Eliminar"
