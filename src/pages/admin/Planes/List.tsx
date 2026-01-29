@@ -159,9 +159,11 @@ export default function PlanesList() {
 
   const handleDelete = async () => {
     const selectedPlan = selected;
-    if (!selectedPlan?.id && !(selectedPlan as any)?._id) return;
+    if (!selectedPlan) return;
+    const planIdRaw = selectedPlan.id ?? (selectedPlan as any)?._id;
+    if (!planIdRaw) return;
     try {
-      const planId = String(selectedPlan.id ?? (selectedPlan as any)._id);
+      const planId = String(planIdRaw);
       await deleteNutritionPlan(planId);
       setSnackbar({ message: "Plan eliminado.", type: "success" });
       setConfirmOpen(false);
