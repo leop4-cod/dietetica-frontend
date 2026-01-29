@@ -48,7 +48,7 @@ jobs:
 
             mkdir -p /var/www/dietetica-app
             rm -rf /var/www/dietetica-app/*
-            cp -r /tmp/react_build/dist/* /var/www/dietetica-app/
+            cp -r /tmp/dietetica_build/dist/* /var/www/dietetica-app/
 
             chown -R www-data:www-data /var/www/dietetica-app
 
