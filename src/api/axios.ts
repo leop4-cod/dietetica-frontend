@@ -29,9 +29,12 @@ api.interceptors.response.use(
   },
   (error: AxiosError) => {
     stopLoading();
-    if (error.response?.status === 401) {
+    const url = error.config?.url ?? "";
+    const isAuthRequest = url.includes("/auth/login") || url.includes("/auth/register");
+    if (error.response?.status === 401 && !isAuthRequest) {
       localStorage.removeItem(STORAGE_TOKEN_KEY);
       localStorage.removeItem(STORAGE_USER_KEY);
+      window.dispatchEvent(new Event("auth:logout"));
       const isAdminPath = window.location.pathname.startsWith("/app/admin");
       const target = isAdminPath ? "/login/admin" : "/login/cliente";
       if (window.location.pathname !== target) {

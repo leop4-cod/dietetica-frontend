@@ -27,7 +27,7 @@ import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 
-const getRowId = (row: Product) => row.id ?? row.nombre;
+const getRowId = (row: Product) => row.id ?? (row as any)._id ?? row.nombre;
 
 function NoRowsOverlay() {
   return (
@@ -107,76 +107,81 @@ export default function ProductsList() {
         field: "nombre",
         headerName: "Nombre",
         flex: 1,
-        valueGetter: ({ row }) => row.nombre ?? "Sin nombre",
+        valueGetter: (params) => params?.row?.nombre ?? "Sin nombre",
       },
       {
         field: "precio",
         headerName: "Precio",
         width: 140,
-        valueGetter: ({ row }) => (row.precio !== undefined ? `$${row.precio}` : "-"),
+        valueGetter: (params) =>
+          params?.row?.precio !== undefined ? `$${params.row.precio}` : "-",
       },
       {
         field: "stock",
         headerName: "Stock",
         width: 120,
-        valueGetter: ({ row }) => row.inventory?.stock ?? "-",
+        valueGetter: (params) => params?.row?.inventory?.stock ?? "-",
       },
       {
         field: "categoria",
         headerName: "Categoría",
         width: 180,
-        valueGetter: ({ row }) => row.category?.nombre ?? "-",
+        valueGetter: (params) => params?.row?.category?.nombre ?? "-",
       },
       {
         field: "activo",
         headerName: "Activo",
         width: 110,
-        valueGetter: ({ row }) => (row.activo ? "Sí" : "No"),
+        valueGetter: (params) => (params?.row?.activo ? "Sí" : "No"),
       },
       {
         field: "acciones",
         headerName: "Acciones",
         width: 260,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            <Button
-              size="small"
-              startIcon={<VisibilityIcon />}
-              onClick={() => navigate(`/app/admin/productos/${row.id}`)}
-            >
-              Ver
-            </Button>
-            <Button
-              size="small"
-              startIcon={<EditIcon />}
-              onClick={() => {
-                if (!canEdit) {
-                  setSnackbar({ message: "No autorizado", type: "error" });
-                  return;
-                }
-                navigate(`/app/admin/productos/${row.id}/edit`);
-              }}
-            >
-              Editar
-            </Button>
-            <Button
-              size="small"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={() => {
-                if (!canDelete) {
-                  setSnackbar({ message: "No autorizado", type: "error" });
-                  return;
-                }
-                setSelected(row);
-                setConfirmOpen(true);
-              }}
-            >
-              Eliminar
-            </Button>
-          </Stack>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
+              <Button
+                size="small"
+                startIcon={<VisibilityIcon />}
+                onClick={() => navigate(`/app/admin/productos/${row.id}`)}
+              >
+                Ver
+              </Button>
+              <Button
+                size="small"
+                startIcon={<EditIcon />}
+                onClick={() => {
+                  if (!canEdit) {
+                    setSnackbar({ message: "No autorizado", type: "error" });
+                    return;
+                  }
+                  navigate(`/app/admin/productos/${row.id}/edit`);
+                }}
+              >
+                Editar
+              </Button>
+              <Button
+                size="small"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => {
+                  if (!canDelete) {
+                    setSnackbar({ message: "No autorizado", type: "error" });
+                    return;
+                  }
+                  setSelected(row);
+                  setConfirmOpen(true);
+                }}
+              >
+                Eliminar
+              </Button>
+            </Stack>
+          );
+        },
       },
     ],
     [canDelete, canEdit, navigate]

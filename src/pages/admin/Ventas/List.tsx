@@ -62,7 +62,7 @@ export default function VentasList() {
       const matchesEstado = estadoFilter === "all" || row.estado === estadoFilter;
       const matchesText =
         !term ||
-        row.id?.toLowerCase().includes(term) ||
+        String(row.id ?? "").toLowerCase().includes(term) ||
         row.user?.email?.toLowerCase().includes(term) ||
         row.user?.nombre?.toLowerCase().includes(term);
       return matchesEstado && matchesText;
@@ -76,7 +76,7 @@ export default function VentasList() {
         field: "cliente",
         headerName: "Cliente",
         flex: 1,
-        valueGetter: ({ row }) => row.user?.email ?? row.user?.nombre ?? "-",
+        valueGetter: (params) => params?.row?.user?.email ?? params?.row?.user?.nombre ?? "-",
       },
       { field: "total", headerName: "Total", width: 140 },
       { field: "metodo_pago", headerName: "Pago", width: 140 },
@@ -85,39 +85,43 @@ export default function VentasList() {
         field: "fecha",
         headerName: "Fecha",
         width: 160,
-        valueGetter: ({ row }) =>
-          row.fecha ? new Date(row.fecha).toLocaleDateString() : "-",
+        valueGetter: (params) =>
+          params?.row?.fecha ? new Date(params.row.fecha).toLocaleDateString() : "-",
       },
       {
         field: "acciones",
         headerName: "Acciones",
         width: 220,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            <Button
-              size="small"
-              onClick={() => {
-                setSelected(row);
-                setDetailOpen(true);
-              }}
-            >
-              Ver
-            </Button>
-            {canEdit && (
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
               <Button
                 size="small"
                 onClick={() => {
                   setSelected(row);
-                  setEstado(row.estado ?? "");
-                  setStatusOpen(true);
+                  setDetailOpen(true);
                 }}
               >
-                Cambiar estado
+                Ver
               </Button>
-            )}
-          </Stack>
-        ),
+              {canEdit && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSelected(row);
+                    setEstado(row.estado ?? "");
+                    setStatusOpen(true);
+                  }}
+                >
+                  Cambiar estado
+                </Button>
+              )}
+            </Stack>
+          );
+        },
       },
     ],
     [canEdit]

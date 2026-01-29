@@ -73,39 +73,43 @@ export default function ProveedoresList() {
         headerName: "Acciones",
         width: 220,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            {canEdit && (
-              <Button
-                size="small"
-                onClick={() => {
-                  setSelected(row);
-                  setForm({
-                    nombre: row.nombre ?? "",
-                    contacto: row.contacto ?? "",
-                    email: row.email ?? "",
-                    telefono: row.telefono ?? "",
-                  });
-                  setFormOpen(true);
-                }}
-              >
-                Editar
-              </Button>
-            )}
-            {canDelete && (
-              <Button
-                size="small"
-                color="error"
-                onClick={() => {
-                  setSelected(row);
-                  setConfirmOpen(true);
-                }}
-              >
-                Eliminar
-              </Button>
-            )}
-          </Stack>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
+              {canEdit && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSelected(row);
+                    setForm({
+                      nombre: row.nombre ?? "",
+                      contacto: row.contacto ?? "",
+                      email: row.email ?? "",
+                      telefono: row.telefono ?? "",
+                    });
+                    setFormOpen(true);
+                  }}
+                >
+                  Editar
+                </Button>
+              )}
+              {canDelete && (
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    setSelected(row);
+                    setConfirmOpen(true);
+                  }}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </Stack>
+          );
+        },
       },
     ],
     [canDelete, canEdit]

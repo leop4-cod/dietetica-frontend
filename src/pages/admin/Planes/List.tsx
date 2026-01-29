@@ -74,49 +74,55 @@ export default function PlanesList() {
         field: "recomendaciones",
         headerName: "Recomendaciones",
         flex: 1,
-        valueGetter: ({ row }) =>
-          Array.isArray(row.recomendaciones) ? row.recomendaciones.join(", ") : "-",
+        valueGetter: (params) =>
+          Array.isArray(params?.row?.recomendaciones)
+            ? params.row.recomendaciones.join(", ")
+            : "-",
       },
       {
         field: "acciones",
         headerName: "Acciones",
         width: 220,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            {canEdit && (
-              <Button
-                size="small"
-                onClick={() => {
-                  setSelected(row);
-                  setForm({
-                    userId: row.userId ?? "",
-                    objetivo: row.objetivo ?? "",
-                    calorias_diarias: row.calorias_diarias ? String(row.calorias_diarias) : "",
-                    recomendaciones: Array.isArray(row.recomendaciones)
-                      ? row.recomendaciones.join("\n")
-                      : "",
-                  });
-                  setFormOpen(true);
-                }}
-              >
-                Editar
-              </Button>
-            )}
-            {canDelete && (
-              <Button
-                size="small"
-                color="error"
-                onClick={() => {
-                  setSelected(row);
-                  setConfirmOpen(true);
-                }}
-              >
-                Eliminar
-              </Button>
-            )}
-          </Stack>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
+              {canEdit && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSelected(row);
+                    setForm({
+                      userId: row?.userId ?? "",
+                      objetivo: row?.objetivo ?? "",
+                      calorias_diarias: row?.calorias_diarias ? String(row.calorias_diarias) : "",
+                      recomendaciones: Array.isArray(row?.recomendaciones)
+                        ? row.recomendaciones.join("\n")
+                        : "",
+                    });
+                    setFormOpen(true);
+                  }}
+                >
+                  Editar
+                </Button>
+              )}
+              {canDelete && (
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    setSelected(row);
+                    setConfirmOpen(true);
+                  }}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </Stack>
+          );
+        },
       },
     ],
     [canDelete, canEdit]

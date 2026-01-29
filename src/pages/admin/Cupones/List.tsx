@@ -75,46 +75,50 @@ export default function CuponesList() {
         field: "activo",
         headerName: "Activo",
         width: 100,
-        valueGetter: ({ row }) => (row.activo ? "Si" : "No"),
+        valueGetter: (params) => (params?.row?.activo ? "Si" : "No"),
       },
       {
         field: "acciones",
         headerName: "Acciones",
         width: 220,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            {canManage && (
-              <Button
-                size="small"
-                onClick={() => {
-                  setSelected(row);
-                  setForm({
-                    codigo: row.codigo ?? "",
-                    descuento_porcentaje: String(row.descuento_porcentaje ?? ""),
-                    fecha_expiracion: row.fecha_expiracion ?? "",
-                    activo: row.activo ?? true,
-                  });
-                  setFormOpen(true);
-                }}
-              >
-                Editar
-              </Button>
-            )}
-            {canManage && (
-              <Button
-                size="small"
-                color="error"
-                onClick={() => {
-                  setSelected(row);
-                  setConfirmOpen(true);
-                }}
-              >
-                Eliminar
-              </Button>
-            )}
-          </Stack>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
+              {canManage && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSelected(row);
+                    setForm({
+                      codigo: row?.codigo ?? "",
+                      descuento_porcentaje: String(row?.descuento_porcentaje ?? ""),
+                      fecha_expiracion: row?.fecha_expiracion ?? "",
+                      activo: row?.activo ?? true,
+                    });
+                    setFormOpen(true);
+                  }}
+                >
+                  Editar
+                </Button>
+              )}
+              {canManage && (
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    setSelected(row);
+                    setConfirmOpen(true);
+                  }}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </Stack>
+          );
+        },
       },
     ],
     [canManage]

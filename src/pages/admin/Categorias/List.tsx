@@ -21,7 +21,7 @@ import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 
-const getRowId = (row: Category) => row.id ?? row.nombre;
+const getRowId = (row: Category) => row.id ?? (row as any)._id ?? row.nombre;
 
 function NoRowsOverlay() {
   return (
@@ -83,58 +83,62 @@ export default function CategoriesList() {
         field: "nombre",
         headerName: "Nombre",
         flex: 1,
-        valueGetter: ({ row }) => row.nombre ?? "Sin nombre",
+        valueGetter: (params) => params?.row?.nombre ?? "Sin nombre",
       },
       {
         field: "descripcion",
         headerName: "Descripción",
         flex: 1.2,
-        valueGetter: ({ row }) => row.descripcion ?? "-",
+        valueGetter: (params) => params?.row?.descripcion ?? "-",
       },
       {
         field: "acciones",
         headerName: "Acciones",
         width: 260,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            <Button
-              size="small"
-              startIcon={<VisibilityIcon />}
-              onClick={() => navigate(`/app/admin/categorias/${row.id}`)}
-            >
-              Ver
-            </Button>
-            <Button
-              size="small"
-              startIcon={<EditIcon />}
-              onClick={() => {
-                if (!canEdit) {
-                  setSnackbar({ message: "No autorizado", type: "error" });
-                  return;
-                }
-                navigate(`/app/admin/categorias/${row.id}/edit`);
-              }}
-            >
-              Editar
-            </Button>
-            <Button
-              size="small"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={() => {
-                if (!canDelete) {
-                  setSnackbar({ message: "No autorizado", type: "error" });
-                  return;
-                }
-                setSelected(row);
-                setConfirmOpen(true);
-              }}
-            >
-              Eliminar
-            </Button>
-          </Stack>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
+              <Button
+                size="small"
+                startIcon={<VisibilityIcon />}
+                onClick={() => navigate(`/app/admin/categorias/${row.id}`)}
+              >
+                Ver
+              </Button>
+              <Button
+                size="small"
+                startIcon={<EditIcon />}
+                onClick={() => {
+                  if (!canEdit) {
+                    setSnackbar({ message: "No autorizado", type: "error" });
+                    return;
+                  }
+                  navigate(`/app/admin/categorias/${row.id}/edit`);
+                }}
+              >
+                Editar
+              </Button>
+              <Button
+                size="small"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => {
+                  if (!canDelete) {
+                    setSnackbar({ message: "No autorizado", type: "error" });
+                    return;
+                  }
+                  setSelected(row);
+                  setConfirmOpen(true);
+                }}
+              >
+                Eliminar
+              </Button>
+            </Stack>
+          );
+        },
       },
     ],
     [canDelete, canEdit, navigate]

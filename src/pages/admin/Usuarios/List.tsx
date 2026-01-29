@@ -70,36 +70,40 @@ export default function UsuariosList() {
         headerName: "Acciones",
         width: 220,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Stack direction="row" spacing={1}>
-            <Button
-              size="small"
-              onClick={() => {
-                setSelected(row);
-                setForm({
-                  nombre: row.nombre ?? "",
-                  email: row.email ?? "",
-                  telefono: row.telefono ?? "",
-                  password: "",
-                  rol: row.rol ?? "cliente",
-                });
-                setFormOpen(true);
-              }}
-            >
-              Editar
-            </Button>
-            <Button
-              size="small"
-              color="error"
-              onClick={() => {
-                setSelected(row);
-                setConfirmOpen(true);
-              }}
-            >
-              Eliminar
-            </Button>
-          </Stack>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Stack direction="row" spacing={1}>
+              <Button
+                size="small"
+                onClick={() => {
+                  setSelected(row);
+                  setForm({
+                    nombre: row.nombre ?? "",
+                    email: row.email ?? "",
+                    telefono: row.telefono ?? "",
+                    password: "",
+                    rol: row.rol ?? "cliente",
+                  });
+                  setFormOpen(true);
+                }}
+              >
+                Editar
+              </Button>
+              <Button
+                size="small"
+                color="error"
+                onClick={() => {
+                  setSelected(row);
+                  setConfirmOpen(true);
+                }}
+              >
+                Eliminar
+              </Button>
+            </Stack>
+          );
+        },
       },
     ],
     []

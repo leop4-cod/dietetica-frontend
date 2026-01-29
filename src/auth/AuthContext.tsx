@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { login as loginRequest } from "../api/auth.service";
 import { getUser } from "../api/users.service";
@@ -52,6 +52,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setUser(null);
   };
+
+  useEffect(() => {
+    const handleLogout = () => clearSession();
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === STORAGE_TOKEN_KEY || event.key === STORAGE_USER_KEY) {
+        const refreshed = loadFromStorage();
+        setToken(refreshed.token);
+        setUser(refreshed.user);
+      }
+    };
+    window.addEventListener("auth:logout", handleLogout);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("auth:logout", handleLogout);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
 
   const login = async (email: string, password: string, mode?: "cliente" | "admin") => {
     setLoading(true);

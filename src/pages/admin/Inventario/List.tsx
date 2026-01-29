@@ -21,7 +21,7 @@ import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
 import EmptyState from "../../../components/EmptyState";
 
-const getRowId = (row: Product) => row.id ?? row.nombre;
+const getRowId = (row: Product) => row.id ?? (row as any)._id ?? row.nombre;
 
 export default function InventarioList() {
   const { role } = useAuth();
@@ -68,26 +68,30 @@ export default function InventarioList() {
         field: "stock",
         headerName: "Stock",
         width: 140,
-        valueGetter: ({ row }) => row.inventory?.stock ?? 0,
+        valueGetter: (params) => params?.row?.inventory?.stock ?? 0,
       },
       {
         field: "acciones",
         headerName: "Acciones",
         width: 180,
         sortable: false,
-        renderCell: ({ row }) => (
-          <Button
-            size="small"
-            disabled={!canUpdate}
-            onClick={() => {
-              setSelected(row);
-              setStockValue(String(row.inventory?.stock ?? 0));
-              setOpen(true);
-            }}
-          >
-            Actualizar
-          </Button>
-        ),
+        renderCell: (params) => {
+          const row = params?.row;
+          if (!row) return null;
+          return (
+            <Button
+              size="small"
+              disabled={!canUpdate}
+              onClick={() => {
+                setSelected(row);
+                setStockValue(String(row?.inventory?.stock ?? 0));
+                setOpen(true);
+              }}
+            >
+              Actualizar
+            </Button>
+          );
+        },
       },
     ],
     [canUpdate]
