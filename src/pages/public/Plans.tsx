@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
+import { Box, Card, CardContent, GridLegacy as Grid, Stack, Typography } from "@mui/material";
 
 const plans = [
   {

@@ -21,7 +21,9 @@ export function stopLoading() {
 export function subscribeLoading(listener: Listener) {
   listeners.add(listener);
   listener(activeRequests > 0);
-  return () => listeners.delete(listener);
+  return () => {
+    listeners.delete(listener);
+  };
 }
 
 export function isLoading() {

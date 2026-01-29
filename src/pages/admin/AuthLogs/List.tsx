@@ -29,7 +29,7 @@ export default function AuthLogsList() {
     load();
   }, []);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<AuthLog>[]>(
     () => [
       { field: "userId", headerName: "Usuario", flex: 1 },
       { field: "accion", headerName: "Acción", flex: 1 },
@@ -53,7 +53,7 @@ export default function AuthLogsList() {
         disableRowSelectionOnClick
       />
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

@@ -4,7 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { getApiErrorMessage } from "../../api/axios";
 
-export default function Login() {
+type LoginProps = {
+  title?: string;
+  subtitle?: string;
+  redirectTo?: string;
+};
+
+export default function Login({
+  title = "Iniciar sesión",
+  subtitle,
+  redirectTo = "/app/admin/dashboard",
+}: LoginProps) {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -22,7 +32,7 @@ export default function Login() {
     try {
       await login(email.trim(), password.trim());
       setSnackbar({ message: "Bienvenido al panel.", type: "success" });
-      navigate("/app/admin/dashboard", { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     }
@@ -34,8 +44,9 @@ export default function Login() {
         <CardContent>
           <Stack spacing={3} component="form" onSubmit={handleSubmit}>
             <Typography variant="h5" fontWeight={800}>
-              Iniciar sesión
+              {title}
             </Typography>
+            {subtitle && <Typography color="text.secondary">{subtitle}</Typography>}
             <TextField
               label="Correo"
               type="email"
@@ -64,7 +75,7 @@ export default function Login() {
         autoHideDuration={5000}
         onClose={() => setSnackbar(null)}
       >
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

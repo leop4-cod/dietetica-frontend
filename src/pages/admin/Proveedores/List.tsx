@@ -241,7 +241,7 @@ export default function ProveedoresList() {
       />
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

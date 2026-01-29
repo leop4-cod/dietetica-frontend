@@ -3,7 +3,7 @@ import {
   Alert,
   Box,
   FormControl,
-  Grid,
+  GridLegacy as Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -135,7 +135,7 @@ export default function CatalogoCliente() {
         autoHideDuration={5000}
         onClose={() => setSnackbar(null)}
       >
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import { Alert, Box, Card, CardContent, GridLegacy as Grid, Typography } from "@mui/material";
 import { listProducts, type Product } from "../../api/services/products.service";
 import { getApiErrorMessage } from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
@@ -16,7 +16,8 @@ export default function Catalogo() {
       setLoading(true);
       try {
         const data = await listProducts();
-        setProducts(Array.isArray(data) ? data : []);
+        const items = Array.isArray(data) ? data : data.items ?? [];
+        setProducts(items);
       } catch (err) {
         setError(getApiErrorMessage(err));
       } finally {
@@ -48,17 +49,16 @@ export default function Catalogo() {
       )}
       <Grid container spacing={2} sx={{ mt: 1 }}>
         {products.map((product) => (
-          <Grid item xs={12} md={4} key={product.id ?? product._id ?? product.nombre ?? product.name}>
+          <Grid item xs={12} md={4} key={product.id ?? product.nombre}>
             <Card>
               <CardContent>
-                <Typography fontWeight={700}>
-                  {product.nombre ?? product.name ?? "Producto"}
+                <Typography fontWeight={700}>{product.nombre ?? "Producto"}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Estado:{" "}
+                  {product.activo === undefined ? "SIN ESTADO" : product.activo ? "Activo" : "Inactivo"}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Estado: {product.estado ?? product.status ?? "SIN ESTADO"}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Precio: {product.precio ?? product.price ?? "-"}
+                  Precio: {product.precio ?? "-"}
                 </Typography>
               </CardContent>
             </Card>

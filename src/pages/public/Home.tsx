@@ -3,7 +3,7 @@ import {
   Box,
   Button,
   Container,
-  Grid,
+  GridLegacy as Grid,
   Stack,
   Typography,
 } from "@mui/material";

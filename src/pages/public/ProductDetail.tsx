@@ -7,7 +7,7 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Grid,
+  GridLegacy as Grid,
   Snackbar,
   Stack,
   Typography,
@@ -163,7 +163,7 @@ export default function ProductDetail() {
       </Box>
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Stack>
   );

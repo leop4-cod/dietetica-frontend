@@ -66,7 +66,7 @@ export default function CuponesList() {
     load();
   }, []);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<Coupon>[]>(
     () => [
       { field: "codigo", headerName: "Codigo", flex: 1 },
       { field: "descuento_porcentaje", headerName: "Descuento %", width: 140 },
@@ -75,7 +75,7 @@ export default function CuponesList() {
         field: "activo",
         headerName: "Activo",
         width: 100,
-        valueGetter: (params) => (params?.row?.activo ? "Si" : "No"),
+        valueGetter: (_value, row) => (row?.activo ? "Si" : "No"),
       },
       {
         field: "acciones",
@@ -262,7 +262,7 @@ export default function CuponesList() {
       />
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

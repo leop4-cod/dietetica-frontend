@@ -5,7 +5,7 @@ import {
   Button,
   Card,
   CardContent,
-  Grid,
+  GridLegacy as Grid,
   MenuItem,
   Snackbar,
   Stack,
@@ -166,7 +166,7 @@ export default function Citas() {
         autoHideDuration={5000}
         onClose={() => setSnackbar(null)}
       >
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

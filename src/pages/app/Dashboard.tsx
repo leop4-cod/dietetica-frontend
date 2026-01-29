@@ -4,7 +4,7 @@ import {
   Button,
   Card,
   CardContent,
-  Grid,
+  GridLegacy as Grid,
   Stack,
   Typography,
 } from "@mui/material";

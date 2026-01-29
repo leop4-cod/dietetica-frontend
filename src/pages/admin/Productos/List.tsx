@@ -101,38 +101,37 @@ export default function ProductsList() {
     });
   }, [rows, categoryFilter]);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<Product>[]>(
     () => [
       {
         field: "nombre",
         headerName: "Nombre",
         flex: 1,
-        valueGetter: (params) => params?.row?.nombre ?? "Sin nombre",
+        valueGetter: (_value, row) => row?.nombre ?? "Sin nombre",
       },
       {
         field: "precio",
         headerName: "Precio",
         width: 140,
-        valueGetter: (params) =>
-          params?.row?.precio !== undefined ? `$${params.row.precio}` : "-",
+        valueGetter: (_value, row) => (row?.precio !== undefined ? `$${row.precio}` : "-"),
       },
       {
         field: "stock",
         headerName: "Stock",
         width: 120,
-        valueGetter: (params) => params?.row?.inventory?.stock ?? "-",
+        valueGetter: (_value, row) => row?.inventory?.stock ?? "-",
       },
       {
         field: "categoria",
         headerName: "Categoría",
         width: 180,
-        valueGetter: (params) => params?.row?.category?.nombre ?? "-",
+        valueGetter: (_value, row) => row?.category?.nombre ?? "-",
       },
       {
         field: "activo",
         headerName: "Activo",
         width: 110,
-        valueGetter: (params) => (params?.row?.activo ? "Sí" : "No"),
+        valueGetter: (_value, row) => (row?.activo ? "Sí" : "No"),
       },
       {
         field: "acciones",
@@ -280,7 +279,7 @@ export default function ProductsList() {
       />
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

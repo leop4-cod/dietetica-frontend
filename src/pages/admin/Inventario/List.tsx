@@ -61,14 +61,14 @@ export default function InventarioList() {
     return rows.filter((row) => row.nombre?.toLowerCase().includes(term));
   }, [rows, search]);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<Product>[]>(
     () => [
       { field: "nombre", headerName: "Producto", flex: 1 },
       {
         field: "stock",
         headerName: "Stock",
         width: 140,
-        valueGetter: (params) => params?.row?.inventory?.stock ?? 0,
+        valueGetter: (_value, row) => row?.inventory?.stock ?? 0,
       },
       {
         field: "acciones",
@@ -164,7 +164,7 @@ export default function InventarioList() {
         autoHideDuration={5000}
         onClose={() => setSnackbar(null)}
       >
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

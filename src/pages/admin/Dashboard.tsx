@@ -5,7 +5,7 @@ import {
   Button,
   Card,
   CardContent,
-  Grid,
+  GridLegacy as Grid,
   Snackbar,
   Stack,
   Typography,
@@ -223,7 +223,7 @@ export default function Dashboard() {
       )}
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

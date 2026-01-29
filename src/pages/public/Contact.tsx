@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, GridLegacy as Grid, Stack, TextField, Typography } from "@mui/material";
 
 export default function Contact() {
   return (

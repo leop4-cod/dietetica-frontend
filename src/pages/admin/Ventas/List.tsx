@@ -69,14 +69,14 @@ export default function VentasList() {
     });
   }, [rows, search, estadoFilter]);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<Sale>[]>(
     () => [
       { field: "id", headerName: "ID", width: 220 },
       {
         field: "cliente",
         headerName: "Cliente",
         flex: 1,
-        valueGetter: (params) => params?.row?.user?.email ?? params?.row?.user?.nombre ?? "-",
+        valueGetter: (_value, row) => row?.user?.email ?? row?.user?.nombre ?? "-",
       },
       { field: "total", headerName: "Total", width: 140 },
       { field: "metodo_pago", headerName: "Pago", width: 140 },
@@ -85,8 +85,7 @@ export default function VentasList() {
         field: "fecha",
         headerName: "Fecha",
         width: 160,
-        valueGetter: (params) =>
-          params?.row?.fecha ? new Date(params.row.fecha).toLocaleDateString() : "-",
+        valueGetter: (_value, row) => (row?.fecha ? new Date(row.fecha).toLocaleDateString() : "-"),
       },
       {
         field: "acciones",
@@ -237,7 +236,7 @@ export default function VentasList() {
       </Dialog>
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

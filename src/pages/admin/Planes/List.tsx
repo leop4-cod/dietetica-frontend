@@ -65,7 +65,7 @@ export default function PlanesList() {
     load();
   }, []);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<NutritionPlan>[]>(
     () => [
       { field: "userId", headerName: "Usuario", flex: 1 },
       { field: "objetivo", headerName: "Objetivo", flex: 1 },
@@ -74,10 +74,8 @@ export default function PlanesList() {
         field: "recomendaciones",
         headerName: "Recomendaciones",
         flex: 1,
-        valueGetter: (params) =>
-          Array.isArray(params?.row?.recomendaciones)
-            ? params.row.recomendaciones.join(", ")
-            : "-",
+        valueGetter: (_value, row) =>
+          Array.isArray(row?.recomendaciones) ? row.recomendaciones.join(", ") : "-",
       },
       {
         field: "acciones",
@@ -142,8 +140,9 @@ export default function PlanesList() {
           ? form.recomendaciones.split(/\r?\n/).map((item) => item.trim()).filter(Boolean)
           : [],
       };
-      if (selected?.id || (selected as any)?._id) {
-        const planId = String(selected.id ?? (selected as any)._id);
+      const selectedPlan = selected;
+      if (selectedPlan && (selectedPlan.id || (selectedPlan as any)?._id)) {
+        const planId = String(selectedPlan.id ?? (selectedPlan as any)._id);
         await updateNutritionPlan(planId, payload);
         setSnackbar({ message: "Plan actualizado.", type: "success" });
       } else {
@@ -159,9 +158,10 @@ export default function PlanesList() {
   };
 
   const handleDelete = async () => {
-    if (!selected?.id && !(selected as any)?._id) return;
+    const selectedPlan = selected;
+    if (!selectedPlan?.id && !(selectedPlan as any)?._id) return;
     try {
-      const planId = String(selected.id ?? (selected as any)._id);
+      const planId = String(selectedPlan.id ?? (selectedPlan as any)._id);
       await deleteNutritionPlan(planId);
       setSnackbar({ message: "Plan eliminado.", type: "success" });
       setConfirmOpen(false);
@@ -261,7 +261,7 @@ export default function PlanesList() {
       />
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

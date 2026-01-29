@@ -209,7 +209,7 @@ export default function Direcciones() {
         autoHideDuration={5000}
         onClose={() => setSnackbar(null)}
       >
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );

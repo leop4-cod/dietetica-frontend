@@ -77,19 +77,19 @@ export default function CategoriesList() {
     return rows.filter((row) => row.nombre?.toLowerCase().includes(term));
   }, [rows, search]);
 
-  const columns = useMemo<GridColDef[]>(
+  const columns = useMemo<GridColDef<Category>[]>(
     () => [
       {
         field: "nombre",
         headerName: "Nombre",
         flex: 1,
-        valueGetter: (params) => params?.row?.nombre ?? "Sin nombre",
+        valueGetter: (_value, row) => row?.nombre ?? "Sin nombre",
       },
       {
         field: "descripcion",
         headerName: "Descripción",
         flex: 1.2,
-        valueGetter: (params) => params?.row?.descripcion ?? "-",
+        valueGetter: (_value, row) => row?.descripcion ?? "-",
       },
       {
         field: "acciones",
@@ -219,7 +219,7 @@ export default function CategoriesList() {
       />
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : null}
+        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
       </Snackbar>
     </Box>
   );
