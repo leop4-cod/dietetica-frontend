@@ -1,38 +1,36 @@
-import { api } from "../axios";
+import { api, unwrapData } from "../axios";
+import type { ApiResponse } from "../../types/api";
+import type { Paginated } from "../../types/pagination";
 
 export type Category = {
-  id?: string | number;
-  _id?: string | number;
-  name?: string;
-  nombre?: string;
-  descripcion?: string;
+  id?: number;
+  nombre: string;
+  descripcion?: string | null;
 };
 
 const BASE_PATH = "/categories";
 
-const unwrap = <T,>(payload: any): T => {
-  if (payload?.data?.items !== undefined) return payload.data.items as T;
-  if (payload?.items !== undefined) return payload.items as T;
-  if (payload?.data !== undefined) return payload.data as T;
-  return payload as T;
+export type ListCategoriesParams = {
+  page?: number;
+  limit?: number;
 };
 
-export async function listCategories(): Promise<Category[]> {
-  const { data } = await api.get(BASE_PATH);
-  return unwrap<Category[]>(data);
+export async function listCategories(params?: ListCategoriesParams): Promise<Paginated<Category>> {
+  const response = await api.get<ApiResponse<Paginated<Category>>>(BASE_PATH, { params });
+  return unwrapData(response);
 }
 
 export async function createCategory(payload: Partial<Category>): Promise<Category> {
-  const { data } = await api.post(BASE_PATH, payload);
-  return unwrap<Category>(data);
+  const response = await api.post<ApiResponse<Category>>(BASE_PATH, payload);
+  return unwrapData(response);
 }
 
 export async function updateCategory(
   id: string | number,
   payload: Partial<Category>
 ): Promise<Category> {
-  const { data } = await api.put(`${BASE_PATH}/${id}`, payload);
-  return unwrap<Category>(data);
+  const response = await api.put<ApiResponse<Category>>(`${BASE_PATH}/${id}`, payload);
+  return unwrapData(response);
 }
 
 export async function deleteCategory(id: string | number): Promise<void> {

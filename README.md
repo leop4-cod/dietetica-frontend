@@ -1,10 +1,10 @@
 # Nutrivida - Frontend
 
-Frontend en React + Vite + TypeScript usando Material UI (MUI) para consumir la API REST de Nutrivida (NestJS).
+Frontend en React + Vite + TypeScript con Material UI (MUI) que consume la API REST de Nutrivida (NestJS).
 
 ## Requisitos
 - Node.js 18+
-- Backend corriendo en `http://localhost:3000` o la URL configurada en `VITE_API_URL`
+- Backend corriendo en la URL configurada en `VITE_API_URL`
 
 ## Instalación
 ```bash
@@ -13,10 +13,21 @@ npm install
 
 ## Configuración de entorno
 Crear `.env` en la raíz del proyecto:
-
 ```bash
 VITE_API_URL=http://localhost:3000
 ```
+
+## Seed de datos (backend)
+Para que el frontend se vea con datos reales, ejecuta el seed del backend:
+```bash
+cd D:\dietetica-backend
+npm install
+npm run seed
+```
+
+Credenciales de prueba creadas por el seed:
+- Admin: `admin@nutrivida.local` / `admin123`
+- Cliente: `cliente@nutrivida.local` / `cliente123`
 
 ## Comandos
 ```bash
@@ -26,60 +37,69 @@ npm run preview
 ```
 
 ## Autenticación
-- Selector de login en el botón "Iniciar sesión" (dialog con Cliente/Admin).
+- Login por perfil (cliente/admin) desde el botón "Iniciar sesión".
 - Pantallas de login:
   - `/login/cliente`
   - `/login/admin`
-- Guarda token en `localStorage` con key `token` y usuario con key `user`
-- Se adjunta el token automáticamente en cada request
-- 401 => logout automático y redirección a `/login/admin`
+- El token se guarda en `localStorage` (`token`) y el usuario en `user`.
+- Interceptor Axios agrega `Authorization: Bearer <token>`.
+- 401 => logout automático y redirección a `/login/admin` o `/login/cliente` según la ruta.
+- Si el login no trae rol, el frontend consulta `GET /users/:id` para completar el perfil.
 
-## Roles
-Roles desde backend:
+## Roles (backend real)
 - `admin` => **ADMIN** (ver/crear/editar/eliminar)
-- `empleado` => **EDITOR** (ver/crear/editar)
-- `cliente` => **CLIENTE** (solo público)
-- Si existiera `operador` => **OPERADOR** (ver/cambiar estados)
+- `empleado` => **EMPLEADO** (ver/crear/editar/cambiar estado)
+- `cliente` => **CLIENTE** (acceso a compras, reseñas y planes)
 
-## Guía rápida de navegación
-- Público:
-  - `/` Inicio
-  - `/catalogo` Catálogo público
-  - `/catalogo/:id` Detalle público
-  - `/contacto` Contacto
-  - `/registro` Registro de clientes
-- Cliente:
-  - `/app` Dashboard
-  - `/app/catalogo`
-  - `/app/productos/:id`
-  - `/app/carrito`
-  - `/app/mis-compras`
-  - `/app/perfil`
-  - `/app/direcciones`
-  - `/app/resenas`
-  - `/app/planes`
-- Admin (requiere login):
-  - `/admin/dashboard`
-  - `/admin/productos` (listado)
-  - `/admin/productos/new` (nuevo)
-  - `/admin/productos/:id` (detalle)
-  - `/admin/productos/:id/edit` (editar)
-  - `/admin/categorias` (listado)
-  - `/admin/categorias/new` (nuevo)
-  - `/admin/categorias/:id` (detalle)
-  - `/admin/categorias/:id/edit` (editar)
-  - `/admin/planes`
-  - `/admin/ventas`
-  - `/admin/inventario`
-  - `/admin/cupones`
-  - `/admin/proveedores`
-  - `/admin/usuarios`
-  - `/admin/auth-logs`
+## Rutas principales
+### Público
+- `/` Inicio
+- `/catalogo` Catálogo público
+- `/producto/:id` Detalle público
+- `/contacto` Contacto
+- `/registro` Registro de clientes
 
-## Endpoints consumidos
+### Cliente
+- `/app/cliente` Dashboard
+- `/app/cliente/catalogo`
+- `/app/cliente/producto/:id`
+- `/app/cliente/carrito`
+- `/app/cliente/mis-compras`
+- `/app/cliente/perfil`
+- `/app/cliente/direcciones`
+- `/app/cliente/resenas`
+- `/app/cliente/planes`
+- `/app/cliente/citas`
+
+### Admin
+- `/app/admin/dashboard`
+- `/app/admin/productos` (listado)
+- `/app/admin/productos/new` (nuevo)
+- `/app/admin/productos/:id` (detalle)
+- `/app/admin/productos/:id/edit` (editar)
+- `/app/admin/categorias` (listado)
+- `/app/admin/categorias/new` (nuevo)
+- `/app/admin/categorias/:id` (detalle)
+- `/app/admin/categorias/:id/edit` (editar)
+- `/app/admin/planes`
+- `/app/admin/ventas`
+- `/app/admin/inventario`
+- `/app/admin/cupones`
+- `/app/admin/proveedores`
+- `/app/admin/usuarios`
+- `/app/admin/auth-logs`
+
+## Endpoints consumidos (backend real)
 ### Auth
 - `POST /auth/login`
 - `POST /auth/register`
+
+### Usuarios
+- `GET /users`
+- `GET /users/:id`
+- `POST /users`
+- `PUT /users/:id`
+- `DELETE /users/:id`
 
 ### Categorías
 - `GET /categories`
@@ -95,28 +115,32 @@ Roles desde backend:
 - `PUT /products/:id`
 - `DELETE /products/:id`
 
-### Planes nutricionales (Home)
-- `GET /nutrition-plans`
+### Planes nutricionales
+- `GET /nutrition-plans` (requiere JWT)
 
-### Reseñas (Home)
+### Reseñas
 - `GET /reviews`
+- `POST /reviews` (requiere JWT)
 
-### Cliente
+### Cliente / Ventas
 - `GET /cart`, `POST /cart`, `DELETE /cart/:productId`
-- `GET /sales`, `POST /sales`
-- `GET /addresses`, `POST /addresses`, `PUT /addresses/:id`, `DELETE /addresses/:id`
-- `GET /users/:id`
-- `POST /reviews`
+- `GET /sales`, `POST /sales`, `PUT /sales/:id`
+- `GET /history/appointments`, `POST /history/appointments`
 
 ### Admin extra
-- `GET /sales`, `PUT /sales/:id`
 - `GET /inventory/:productId`, `PUT /inventory/:productId`
 - `GET /coupons`, `POST/PUT/DELETE /coupons`
 - `GET /suppliers`, `POST/PUT/DELETE /suppliers`
-- `GET /users`, `POST/PUT/DELETE /users`
 - `GET /auth-logs`
 
-## Capturas / guía rápida
-- El dashboard muestra totales de productos y categorías.
-- Los listados usan DataGrid con acciones según rol.
-- Los formularios incluyen validaciones básicas y mensajes con Snackbar.
+## Notas de integración
+- El backend actual **no expone campos de imagen** en `products` ni `categories`.
+  Por eso las cards muestran un placeholder con el texto "Imagen no disponible en la API".
+- `nutrition-plans` requiere JWT incluso para `GET`, por eso el Home muestra CTA a login
+  cuando no hay sesión.
+- Si el endpoint no existe o no responde, el frontend muestra "No disponible en API".
+
+## Evidencia (UI)
+- Secciones con `EmptyState` + CTA en Home y Catálogo cuando no hay datos.
+- Cards modernas con placeholders para imágenes reales.
+- Sidebar y rutas protegidas con `RequireAuth` + `RequireRole`.

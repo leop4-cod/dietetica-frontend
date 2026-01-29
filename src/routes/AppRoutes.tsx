@@ -28,6 +28,7 @@ import Perfil from "../pages/app/Perfil";
 import Direcciones from "../pages/app/Direcciones";
 import Resenas from "../pages/app/Resenas";
 import Planes from "../pages/app/Planes";
+import Citas from "../pages/app/Citas";
 import PlanesAdmin from "../pages/admin/Planes/List";
 import VentasAdmin from "../pages/admin/Ventas/List";
 import InventarioAdmin from "../pages/admin/Inventario/List";
@@ -43,7 +44,7 @@ export default function AppRoutes() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/catalogo" element={<Catalog />} />
-          <Route path="/catalogo/:id" element={<ProductDetail />} />
+          <Route path="/producto/:id" element={<ProductDetail />} />
           <Route path="/contacto" element={<Contact />} />
         </Route>
 
@@ -52,9 +53,10 @@ export default function AppRoutes() {
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/no-autorizado" element={<NoAutorizado />} />
+        <Route path="/app" element={<Navigate to="/app/cliente" replace />} />
 
         <Route
-          path="/app"
+          path="/app/cliente"
           element={
             <ProtectedRoute redirectTo="/login/cliente">
               <RoleGuard roles={["CLIENTE"]}>
@@ -65,26 +67,27 @@ export default function AppRoutes() {
         >
           <Route index element={<ClientDashboard />} />
           <Route path="catalogo" element={<CatalogoCliente />} />
-          <Route path="productos/:id" element={<ProductoDetalleCliente />} />
+          <Route path="producto/:id" element={<ProductoDetalleCliente />} />
           <Route path="carrito" element={<Carrito />} />
           <Route path="mis-compras" element={<MisCompras />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="direcciones" element={<Direcciones />} />
           <Route path="resenas" element={<Resenas />} />
           <Route path="planes" element={<Planes />} />
+          <Route path="citas" element={<Citas />} />
         </Route>
 
         <Route
-          path="/admin"
+          path="/app/admin"
           element={
             <ProtectedRoute redirectTo="/login/admin">
-              <RoleGuard roles={["ADMIN", "EDITOR", "OPERADOR", "DOCTOR"]}>
+              <RoleGuard roles={["ADMIN", "EMPLEADO"]}>
                 <AdminLayout />
               </RoleGuard>
             </ProtectedRoute>
           }
         >
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route index element={<Navigate to="/app/admin/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
 
           <Route path="productos">
@@ -100,55 +103,13 @@ export default function AppRoutes() {
             <Route path=":id" element={<CategoriesDetail />} />
             <Route path=":id/edit" element={<CategoriesForm />} />
           </Route>
-          <Route
-            path="planes"
-            element={
-              <RoleGuard roles={["ADMIN", "EDITOR", "DOCTOR"]}>
-                <PlanesAdmin />
-              </RoleGuard>
-            }
-          />
+          <Route path="planes" element={<PlanesAdmin />} />
           <Route path="ventas" element={<VentasAdmin />} />
-          <Route
-            path="inventario"
-            element={
-              <RoleGuard roles={["ADMIN", "OPERADOR", "DOCTOR"]}>
-                <InventarioAdmin />
-              </RoleGuard>
-            }
-          />
-          <Route
-            path="cupones"
-            element={
-              <RoleGuard roles={["ADMIN", "EDITOR"]}>
-                <CuponesAdmin />
-              </RoleGuard>
-            }
-          />
-          <Route
-            path="proveedores"
-            element={
-              <RoleGuard roles={["ADMIN", "EDITOR"]}>
-                <ProveedoresAdmin />
-              </RoleGuard>
-            }
-          />
-          <Route
-            path="usuarios"
-            element={
-              <RoleGuard roles={["ADMIN"]}>
-                <UsuariosAdmin />
-              </RoleGuard>
-            }
-          />
-          <Route
-            path="auth-logs"
-            element={
-              <RoleGuard roles={["ADMIN"]}>
-                <AuthLogsAdmin />
-              </RoleGuard>
-            }
-          />
+          <Route path="inventario" element={<InventarioAdmin />} />
+          <Route path="cupones" element={<CuponesAdmin />} />
+          <Route path="proveedores" element={<ProveedoresAdmin />} />
+          <Route path="usuarios" element={<UsuariosAdmin />} />
+          <Route path="auth-logs" element={<AuthLogsAdmin />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

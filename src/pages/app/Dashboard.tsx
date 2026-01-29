@@ -181,13 +181,13 @@ export default function ClientDashboard() {
       </Grid>
 
       <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mt: 4 }}>
-        <Button variant="contained" component={NavLink} to="/app/catalogo">
+        <Button variant="contained" component={NavLink} to="/app/cliente/catalogo">
           Ver catálogo
         </Button>
-        <Button variant="outlined" component={NavLink} to="/app/carrito">
+        <Button variant="outlined" component={NavLink} to="/app/cliente/carrito">
           Ir al carrito
         </Button>
-        <Button variant="outlined" component={NavLink} to="/app/planes">
+        <Button variant="outlined" component={NavLink} to="/app/cliente/planes">
           Ver planes
         </Button>
       </Stack>

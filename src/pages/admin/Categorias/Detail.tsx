@@ -62,7 +62,7 @@ export default function CategoriesDetail() {
     try {
       await deleteCategory(id);
       setSnackbar({ message: "Categoría eliminada.", type: "success" });
-      navigate("/admin/categorias", { replace: true });
+      navigate("/app/admin/categorias", { replace: true });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
@@ -99,7 +99,7 @@ export default function CategoriesDetail() {
                 setSnackbar({ message: "No autorizado", type: "error" });
                 return;
               }
-              navigate(`/admin/categorias/${category.id}/edit`);
+              navigate(`/app/admin/categorias/${category.id}/edit`);
             }}
           >
             Editar

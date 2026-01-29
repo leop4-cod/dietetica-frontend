@@ -3,20 +3,19 @@ import type { Category } from "./category";
 export type Inventory = {
   id?: string;
   stock?: number;
-  ubicacion?: string;
+  ubicacion?: string | null;
   updatedAt?: string;
 };
 
 export type Product = {
-  id?: number | string;
+  id?: string;
   nombre: string;
   descripcion?: string;
   precio?: number;
   activo?: boolean;
-  stock?: number;
   categoria_id?: number;
   supplier_id?: string | null;
+  image_url?: string | null;
   category?: Category;
-  categoria?: Category;
   inventory?: Inventory;
 };

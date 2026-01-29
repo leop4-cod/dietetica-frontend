@@ -32,7 +32,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem(STORAGE_TOKEN_KEY);
       localStorage.removeItem(STORAGE_USER_KEY);
-      const isAdminPath = window.location.pathname.startsWith("/admin");
+      const isAdminPath = window.location.pathname.startsWith("/app/admin");
       const target = isAdminPath ? "/login/admin" : "/login/cliente";
       if (window.location.pathname !== target) {
         window.location.assign(target);

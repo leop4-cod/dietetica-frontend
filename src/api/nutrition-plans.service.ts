@@ -2,15 +2,12 @@ import { api, unwrapData } from "./axios";
 import type { ApiResponse } from "../types/api";
 
 export type NutritionPlan = {
-  id?: number | string;
   _id?: string;
-  nombre?: string;
-  descripcion?: string;
-  duracion?: string;
-  precio?: number;
-  userId?: string;
-  objetivo?: string;
-  calorias_diarias?: number;
+  id?: string;
+  userId: string;
+  objetivo: string;
+  calorias_diarias: number;
+  imageUrl?: string;
   recomendaciones?: string[];
 };
 

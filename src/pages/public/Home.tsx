@@ -2,63 +2,54 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  CardMedia,
   Container,
   Grid,
   Stack,
   Typography,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import SpaIcon from "@mui/icons-material/Spa";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import type { AxiosError } from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
 import { listCategories } from "../../api/categories.service";
 import { listProducts } from "../../api/products.service";
 import { listNutritionPlans, type NutritionPlan } from "../../api/nutrition-plans.service";
 import { listReviews, type Review } from "../../api/reviews.service";
 import type { Category } from "../../types/category";
 import type { Product } from "../../types/product";
-
-const heroImage =
-  "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1600&q=80";
-
-const productImages = [
-  "https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=1200&q=80",
-];
-
-const categoryImages = [
-  "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1506086679525-9b114e1ca7dc?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-];
-
-const planImages = [
-  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=1200&q=80",
-];
+import EmptyState from "../../components/EmptyState";
+import CategoryCard from "../../components/CategoryCard";
+import ProductCard from "../../components/ProductCard";
+import PlanCard from "../../components/PlanCard";
+import { useAuth } from "../../auth/AuthContext";
+import { getImageUrl } from "../../utils/images";
 
 export default function Home() {
+  const navigate = useNavigate();
+  const { token } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [plans, setPlans] = useState<NutritionPlan[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [categoriesUnavailable, setCategoriesUnavailable] = useState(false);
+  const [productsUnavailable, setProductsUnavailable] = useState(false);
+  const [plansUnavailable, setPlansUnavailable] = useState(false);
+  const [reviewsUnavailable, setReviewsUnavailable] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       try {
         const [cats, prods] = await Promise.all([
-          listCategories({ page: 1, limit: 4 }),
-          listProducts({ page: 1, limit: 6 }),
+          listCategories({ page: 1, limit: 8 }),
+          listProducts({ page: 1, limit: 12 }),
         ]);
         setCategories(cats.items ?? []);
         setProducts(prods.items ?? []);
-      } catch {
+      } catch (error) {
+        const status = (error as AxiosError)?.response?.status;
+        setCategoriesUnavailable(status === 404);
+        setProductsUnavailable(status === 404);
         setCategories([]);
         setProducts([]);
       }
@@ -68,7 +59,6 @@ export default function Home() {
 
   useEffect(() => {
     const loadPlans = async () => {
-      const token = localStorage.getItem("token");
       if (!token) {
         setPlans([]);
         return;
@@ -76,27 +66,31 @@ export default function Home() {
       try {
         const data = await listNutritionPlans();
         setPlans(Array.isArray(data) ? data : []);
-      } catch {
+      } catch (error) {
+        const status = (error as AxiosError)?.response?.status;
+        setPlansUnavailable(status === 404);
         setPlans([]);
       }
     };
     loadPlans();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     const loadReviews = async () => {
       try {
         const data = await listReviews();
         setReviews(Array.isArray(data) ? data : []);
-      } catch {
+      } catch (error) {
+        const status = (error as AxiosError)?.response?.status;
+        setReviewsUnavailable(status === 404);
         setReviews([]);
       }
     };
     loadReviews();
   }, []);
 
-  const visibleCategories = useMemo(() => categories.slice(0, 4), [categories]);
-  const visibleProducts = useMemo(() => products.slice(0, 6), [products]);
+  const visibleCategories = useMemo(() => categories.slice(0, 8), [categories]);
+  const visibleProducts = useMemo(() => products.slice(0, 12), [products]);
   const visiblePlans = useMemo(() => plans.slice(0, 3), [plans]);
   const visibleReviews = useMemo(() => reviews.slice(0, 3), [reviews]);
 
@@ -106,7 +100,10 @@ export default function Home() {
         sx={{
           borderRadius: 4,
           overflow: "hidden",
-          backgroundImage: `linear-gradient(120deg, rgba(24,63,54,0.7), rgba(24,63,54,0.2)), url(${heroImage})`,
+          backgroundImage: `linear-gradient(120deg, rgba(12,60,50,0.85), rgba(12,60,50,0.25)), url(${getImageUrl(
+            { id: "hero" },
+            "hero"
+          )})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "common.white",
@@ -119,7 +116,8 @@ export default function Home() {
               Nutrivida para una vida más saludable
             </Typography>
             <Typography>
-              Descubre productos, planes nutricionales y un equipo listo para ayudarte a mejorar tus hábitos.
+              Descubre productos, planes nutricionales y un equipo listo para ayudarte a
+              mejorar tus hábitos.
             </Typography>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
               <Button variant="contained" component={NavLink} to="/catalogo">
@@ -138,26 +136,24 @@ export default function Home() {
           <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
             Categorías destacadas
           </Typography>
-          {visibleCategories.length === 0 ? (
-            <Typography color="text.secondary">No hay categorías para mostrar.</Typography>
+          {categoriesUnavailable ? (
+            <EmptyState
+              title="No disponible en API"
+              description="El endpoint de categorías no está disponible."
+            />
+          ) : visibleCategories.length === 0 ? (
+            <EmptyState
+              title="No hay categorías publicadas"
+              description="Cuando el backend tenga categorías activas aparecerán aquí."
+              actionLabel="Crear una categoría"
+              onAction={() => navigate("/app/admin/categorias")}
+              icon={<AutoAwesomeIcon fontSize="inherit" />}
+            />
           ) : (
             <Grid container spacing={3}>
-              {visibleCategories.map((category, index) => (
-                <Grid item xs={12} sm={6} md={3} key={category.id ?? category.nombre ?? index}>
-                  <Card>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={categoryImages[index % categoryImages.length]}
-                      alt={category.nombre}
-                    />
-                    <CardContent>
-                      <Typography fontWeight={700}>{category.nombre}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {category.descripcion || "Sin descripción"}
-                      </Typography>
-                    </CardContent>
-                  </Card>
+              {visibleCategories.map((category) => (
+                <Grid item xs={12} sm={6} md={3} key={category.id ?? category.nombre}>
+                  <CategoryCard category={category} />
                 </Grid>
               ))}
             </Grid>
@@ -168,29 +164,23 @@ export default function Home() {
           <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
             Productos recomendados
           </Typography>
-          {visibleProducts.length === 0 ? (
-            <Typography color="text.secondary">No hay productos para mostrar.</Typography>
+          {productsUnavailable ? (
+            <EmptyState
+              title="No disponible en API"
+              description="El endpoint de productos no está disponible."
+            />
+          ) : visibleProducts.length === 0 ? (
+            <EmptyState
+              title="No hay productos destacados"
+              description="Agrega productos en el panel administrativo para verlos aquí."
+              actionLabel="Ir al catálogo"
+              onAction={() => navigate("/catalogo")}
+            />
           ) : (
             <Grid container spacing={3}>
-              {visibleProducts.map((product, index) => (
-                <Grid item xs={12} sm={6} md={4} key={product.id ?? product.nombre ?? index}>
-                  <Card>
-                    <CardMedia
-                      component="img"
-                      height="160"
-                      image={productImages[index % productImages.length]}
-                      alt={product.nombre}
-                    />
-                    <CardContent>
-                      <Typography fontWeight={700}>{product.nombre}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {product.descripcion || "Sin descripción"}
-                      </Typography>
-                      <Typography sx={{ mt: 1 }} fontWeight={700}>
-                        {product.precio ? `$${product.precio}` : "Precio a consultar"}
-                      </Typography>
-                    </CardContent>
-                  </Card>
+              {visibleProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={4} key={product.id ?? product.nombre}>
+                  <ProductCard product={product} />
                 </Grid>
               ))}
             </Grid>
@@ -201,33 +191,33 @@ export default function Home() {
           <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
             Planes nutricionales
           </Typography>
-          {visiblePlans.length === 0 ? (
-            <Typography color="text.secondary">No hay planes para mostrar.</Typography>
+          {!token ? (
+            <EmptyState
+              title="Necesitas iniciar sesión"
+              description="El backend protege los planes nutricionales con JWT."
+              actionLabel="Iniciar sesión"
+              onAction={() => navigate("/login/cliente")}
+              icon={<SpaIcon fontSize="inherit" />}
+            />
+          ) : plansUnavailable ? (
+            <EmptyState
+              title="No disponible en API"
+              description="El endpoint de planes nutricionales no está disponible."
+              icon={<SpaIcon fontSize="inherit" />}
+            />
+          ) : visiblePlans.length === 0 ? (
+            <EmptyState
+              title="No hay planes disponibles"
+              description="Crea planes desde el panel administrativo."
+              actionLabel="Ver planes"
+              onAction={() => navigate("/app/cliente/planes")}
+              icon={<SpaIcon fontSize="inherit" />}
+            />
           ) : (
             <Grid container spacing={3}>
-              {visiblePlans.map((plan, index) => (
-                <Grid item xs={12} md={4} key={plan.id ?? plan.nombre ?? index}>
-                  <Card>
-                    <CardMedia
-                      component="img"
-                      height="160"
-                      image={planImages[index % planImages.length]}
-                      alt={plan.nombre}
-                    />
-                    <CardContent>
-                      <Typography fontWeight={700}>
-                        {plan.nombre ?? plan.objetivo ?? "Plan nutricional"}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {plan.descripcion ?? plan.objetivo ?? "Sin descripción"}
-                      </Typography>
-                      {plan.calorias_diarias !== undefined && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          Calorías diarias: {plan.calorias_diarias}
-                        </Typography>
-                      )}
-                    </CardContent>
-                  </Card>
+              {visiblePlans.map((plan) => (
+                <Grid item xs={12} md={4} key={plan._id ?? plan.id ?? plan.objetivo}>
+                  <PlanCard plan={plan} />
                 </Grid>
               ))}
             </Grid>
@@ -238,23 +228,47 @@ export default function Home() {
           <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
             Testimonios y reseñas
           </Typography>
-          {visibleReviews.length === 0 ? (
-            <Typography color="text.secondary">Aún no hay reseñas publicadas.</Typography>
+          {reviewsUnavailable ? (
+            <EmptyState
+              title="No disponible en API"
+              description="El endpoint de reseñas no está disponible."
+              icon={<RateReviewIcon fontSize="inherit" />}
+            />
+          ) : visibleReviews.length === 0 ? (
+            <EmptyState
+              title="Aún no hay reseñas publicadas"
+              description="Invita a tus clientes a dejar su opinión."
+              icon={<RateReviewIcon fontSize="inherit" />}
+            />
           ) : (
             <Grid container spacing={3}>
-              {visibleReviews.map((review, index) => (
-                <Grid item xs={12} md={4} key={(review as any)._id ?? review.id ?? index}>
-                  <Card>
-                    <CardContent>
+              {visibleReviews.map((review) => (
+                <Grid item xs={12} md={4} key={review._id ?? review.id}>
+                  <Box
+                    sx={{
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      border: "1px solid rgba(46, 125, 111, 0.12)",
+                      backgroundColor: "background.paper",
+                      boxShadow: "0 12px 24px rgba(46, 125, 111, 0.12)",
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={getImageUrl(review, "review")}
+                      alt="Reseña"
+                      sx={{ width: "100%", height: 160, objectFit: "cover" }}
+                    />
+                    <Box sx={{ p: 2 }}>
                       <Typography fontWeight={700}>Reseña</Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                         {review.comentario || "Sin comentario"}
                       </Typography>
                       <Typography variant="body2" sx={{ mt: 2 }}>
-                        Calificación: {review.calificacion ?? review.rating ?? "-"}
+                        Calificación: {review.rating ?? "-"}
                       </Typography>
-                    </CardContent>
-                  </Card>
+                    </Box>
+                  </Box>
                 </Grid>
               ))}
             </Grid>

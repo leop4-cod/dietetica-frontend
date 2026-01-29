@@ -60,15 +60,15 @@ export default function AdminLayout() {
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <Toolbar />
         <Breadcrumbs sx={{ mb: 2 }}>
-          <Link component={NavLink} to="/admin/dashboard" underline="hover" color="inherit">
+          <Link component={NavLink} to="/app/admin/dashboard" underline="hover" color="inherit">
             Admin
           </Link>
           {location.pathname
-            .replace("/admin", "")
+            .replace("/app/admin", "")
             .split("/")
             .filter(Boolean)
             .map((segment, index, arr) => {
-              const to = `/admin/${arr.slice(0, index + 1).join("/")}`;
+              const to = `/app/admin/${arr.slice(0, index + 1).join("/")}`;
               const label = segment.replace(/-/g, " ");
               return (
                 <Link key={to} component={NavLink} to={to} underline="hover" color="inherit">

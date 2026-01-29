@@ -96,11 +96,7 @@ export default function ProductsList() {
   const filteredRows = useMemo(() => {
     if (categoryFilter === "all") return rows;
     return rows.filter((row) => {
-      const catId =
-        row.category?.id ??
-        row.categoria?.id ??
-        (row as any)?.categoria_id ??
-        (row as any)?.categoriaId;
+      const catId = row.category?.id ?? (row as any)?.categoria_id;
       return String(catId ?? "") === categoryFilter;
     });
   }, [rows, categoryFilter]);
@@ -129,7 +125,7 @@ export default function ProductsList() {
         field: "categoria",
         headerName: "Categoría",
         width: 180,
-        valueGetter: ({ row }) => row.category?.nombre ?? row.categoria?.nombre ?? "-",
+        valueGetter: ({ row }) => row.category?.nombre ?? "-",
       },
       {
         field: "activo",
@@ -147,7 +143,7 @@ export default function ProductsList() {
             <Button
               size="small"
               startIcon={<VisibilityIcon />}
-              onClick={() => navigate(`/admin/productos/${row.id}`)}
+              onClick={() => navigate(`/app/admin/productos/${row.id}`)}
             >
               Ver
             </Button>
@@ -159,7 +155,7 @@ export default function ProductsList() {
                   setSnackbar({ message: "No autorizado", type: "error" });
                   return;
                 }
-                navigate(`/admin/productos/${row.id}/edit`);
+                navigate(`/app/admin/productos/${row.id}/edit`);
               }}
             >
               Editar
@@ -218,7 +214,7 @@ export default function ProductsList() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() => navigate("/admin/productos/new")}
+          onClick={() => navigate("/app/admin/productos/new")}
           >
             Nuevo producto
           </Button>

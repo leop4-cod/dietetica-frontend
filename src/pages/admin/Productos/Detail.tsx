@@ -62,7 +62,7 @@ export default function ProductsDetail() {
     try {
       await deleteProduct(id);
       setSnackbar({ message: "Producto eliminado.", type: "success" });
-      navigate("/admin/productos", { replace: true });
+      navigate("/app/admin/productos", { replace: true });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
@@ -99,7 +99,7 @@ export default function ProductsDetail() {
                 setSnackbar({ message: "No autorizado", type: "error" });
                 return;
               }
-              navigate(`/admin/productos/${product.id}/edit`);
+              navigate(`/app/admin/productos/${product.id}/edit`);
             }}
           >
             Editar
@@ -131,7 +131,7 @@ export default function ProductsDetail() {
             </Typography>
             <Typography>
               <strong>Categoría:</strong>{" "}
-              {product.category?.nombre ?? product.categoria?.nombre ?? "-"}
+              {product.category?.nombre ?? "-"}
             </Typography>
             <Typography>
               <strong>Stock:</strong> {product.inventory?.stock ?? "-"}

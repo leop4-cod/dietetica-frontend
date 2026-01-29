@@ -139,22 +139,22 @@ export default function Dashboard() {
         <>
           <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mt: 4 }}>
             {(can(role, "create") || can(role, "edit")) && (
-              <Button component={NavLink} to="/admin/productos/new" variant="contained">
+              <Button component={NavLink} to="/app/admin/productos/new" variant="contained">
                 Nuevo producto
               </Button>
             )}
             {(can(role, "create") || can(role, "edit")) && (
-              <Button component={NavLink} to="/admin/categorias/new" variant="outlined">
+              <Button component={NavLink} to="/app/admin/categorias/new" variant="outlined">
                 Nueva categoría
               </Button>
             )}
             {(can(role, "view") || can(role, "change_state")) && (
-              <Button component={NavLink} to="/admin/ventas" variant="outlined">
+              <Button component={NavLink} to="/app/admin/ventas" variant="outlined">
                 Ver ventas
               </Button>
             )}
             {(can(role, "change_state") || can(role, "edit")) && (
-              <Button component={NavLink} to="/admin/inventario" variant="outlined">
+              <Button component={NavLink} to="/app/admin/inventario" variant="outlined">
                 Gestionar inventario
               </Button>
             )}

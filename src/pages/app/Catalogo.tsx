@@ -2,10 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
   FormControl,
   Grid,
   InputLabel,
@@ -16,13 +12,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
 import { listProducts } from "../../api/products.service";
 import { listCategories } from "../../api/categories.service";
 import { addToCart } from "../../api/cart.service";
 import type { Product } from "../../types/product";
 import type { Category } from "../../types/category";
 import { getApiErrorMessage } from "../../api/axios";
+import EmptyState from "../../components/EmptyState";
+import ProductCard from "../../components/ProductCard";
 
 export default function CatalogoCliente() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,6 +27,7 @@ export default function CatalogoCliente() {
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [categoriesUnavailable, setCategoriesUnavailable] = useState(false);
   const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
     null
   );
@@ -45,6 +43,8 @@ export default function CatalogoCliente() {
         setProducts(productRes.items ?? []);
         setCategories(categoryRes.items ?? []);
       } catch (error) {
+        const status = (error as any)?.response?.status;
+        setCategoriesUnavailable(status === 404);
         setSnackbar({ message: getApiErrorMessage(error), type: "error" });
       } finally {
         setLoading(false);
@@ -54,16 +54,15 @@ export default function CatalogoCliente() {
   }, [search]);
 
   const filteredProducts = useMemo(() => {
-    if (categoryId === "all") return products;
+    const term = search.trim().toLowerCase();
     return products.filter((product) => {
-      const catId =
-        product.category?.id ??
-        product.categoria?.id ??
-        (product as any)?.categoria_id ??
-        (product as any)?.categoriaId;
+      const matchesSearch = !term || product.nombre?.toLowerCase().includes(term);
+      if (!matchesSearch) return false;
+      if (categoryId === "all") return true;
+      const catId = product.category?.id ?? (product as any)?.categoria_id;
       return String(catId ?? "") === categoryId;
     });
-  }, [products, categoryId]);
+  }, [products, categoryId, search]);
 
   const handleAddToCart = async (productId?: string | number) => {
     if (!productId) return;
@@ -95,6 +94,7 @@ export default function CatalogoCliente() {
             label="Categoría"
             value={categoryId}
             onChange={(event) => setCategoryId(event.target.value)}
+            disabled={categoriesUnavailable}
           >
             <MenuItem value="all">Todas</MenuItem>
             {categories.map((cat) => (
@@ -105,34 +105,26 @@ export default function CatalogoCliente() {
           </Select>
         </FormControl>
       </Stack>
+      {categoriesUnavailable && (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Categorías no disponibles en API.
+        </Typography>
+      )}
 
       {loading ? (
         <Typography color="text.secondary">Cargando productos...</Typography>
       ) : filteredProducts.length === 0 ? (
-        <Typography color="text.secondary">No hay productos disponibles.</Typography>
+        <EmptyState title="No hay productos disponibles" description="Intenta otra búsqueda." />
       ) : (
         <Grid container spacing={3}>
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product.id ?? product.nombre}>
-              <Card>
-                <CardContent>
-                  <Typography fontWeight={700}>{product.nombre}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    {product.descripcion || "Sin descripción"}
-                  </Typography>
-                  <Typography sx={{ mt: 2 }} fontWeight={700}>
-                    {product.precio ? `$${product.precio}` : "Precio a consultar"}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button component={NavLink} to={`/app/productos/${product.id}`}>
-                    Ver detalle
-                  </Button>
-                  <Button variant="contained" onClick={() => handleAddToCart(product.id)}>
-                    Agregar
-                  </Button>
-                </CardActions>
-              </Card>
+              <ProductCard
+                product={product}
+                detailsPath={`/app/cliente/producto/${product.id}`}
+                showAddToCart
+                onAddToCart={(id) => handleAddToCart(id)}
+              />
             </Grid>
           ))}
         </Grid>

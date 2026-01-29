@@ -101,7 +101,7 @@ export default function CategoriesList() {
             <Button
               size="small"
               startIcon={<VisibilityIcon />}
-              onClick={() => navigate(`/admin/categorias/${row.id}`)}
+              onClick={() => navigate(`/app/admin/categorias/${row.id}`)}
             >
               Ver
             </Button>
@@ -113,7 +113,7 @@ export default function CategoriesList() {
                   setSnackbar({ message: "No autorizado", type: "error" });
                   return;
                 }
-                navigate(`/admin/categorias/${row.id}/edit`);
+                navigate(`/app/admin/categorias/${row.id}/edit`);
               }}
             >
               Editar
@@ -172,7 +172,7 @@ export default function CategoriesList() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() => navigate("/admin/categorias/new")}
+            onClick={() => navigate("/app/admin/categorias/new")}
           >
             Nueva categoría
           </Button>

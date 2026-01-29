@@ -2,9 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
-  Card,
-  CardActions,
-  CardContent,
   FormControl,
   Grid,
   InputLabel,
@@ -14,21 +11,27 @@ import {
   Stack,
   TextField,
   Typography,
-  Button,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
 import { listCategories } from "../../api/categories.service";
 import { listProducts } from "../../api/products.service";
+import { addToCart } from "../../api/cart.service";
 import type { Category } from "../../types/category";
 import type { Product } from "../../types/product";
 import { getApiErrorMessage } from "../../api/axios";
+import { useAuth } from "../../auth/AuthContext";
+import EmptyState from "../../components/EmptyState";
+import ProductCard from "../../components/ProductCard";
+import type { AxiosError } from "axios";
 
 export default function Catalog() {
+  const { role } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [categoryId, setCategoryId] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [productsUnavailable, setProductsUnavailable] = useState(false);
+  const [categoriesUnavailable, setCategoriesUnavailable] = useState(false);
   const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
     null
   );
@@ -47,6 +50,9 @@ export default function Catalog() {
       setCategories(cats.items ?? []);
       setProducts(prods.items ?? []);
     } catch (error) {
+      const status = (error as AxiosError)?.response?.status;
+      setProductsUnavailable(status === 404);
+      setCategoriesUnavailable(status === 404);
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
       setLoading(false);
@@ -59,16 +65,25 @@ export default function Catalog() {
   }, [categoryId, search]);
 
   const filteredProducts = useMemo(() => {
-    if (categoryId === "all") return products;
+    const term = search.trim().toLowerCase();
     return products.filter((product) => {
-      const catId =
-        product.categoria?.id ??
-        product.category?.id ??
-        (product as any)?.categoria_id ??
-        (product as any)?.categoriaId;
+      const matchesSearch = !term || product.nombre?.toLowerCase().includes(term);
+      if (!matchesSearch) return false;
+      if (categoryId === "all") return true;
+      const catId = product.category?.id ?? (product as any)?.categoria_id;
       return String(catId ?? "") === categoryId;
     });
-  }, [categoryId, products]);
+  }, [categoryId, products, search]);
+
+  const handleAddToCart = async (productId?: string) => {
+    if (!productId) return;
+    try {
+      await addToCart({ product_id: String(productId), cantidad: 1 });
+      setSnackbar({ message: "Producto agregado al carrito.", type: "success" });
+    } catch (error) {
+      setSnackbar({ message: getApiErrorMessage(error), type: "error" });
+    }
+  };
 
   return (
     <Box>
@@ -76,30 +91,36 @@ export default function Catalog() {
         <Typography variant="h4" fontWeight={800}>
           Catálogo saludable
         </Typography>
-        <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-          <TextField
-            label="Buscar"
+      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+        <TextField
+          label="Buscar"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Nombre del producto"
             sx={{ maxWidth: 360 }}
           />
-          <FormControl sx={{ maxWidth: 320 }}>
-            <InputLabel>Categoría</InputLabel>
-            <Select
-              label="Categoría"
-              value={categoryId}
-              onChange={(event) => setCategoryId(event.target.value)}
-            >
-              <MenuItem value="all">Todas</MenuItem>
-              {categories.map((cat) => (
-                <MenuItem key={cat.id ?? cat.nombre} value={String(cat.id ?? cat.nombre)}>
-                  {cat.nombre}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Stack>
+        <FormControl sx={{ maxWidth: 320 }}>
+          <InputLabel>Categoría</InputLabel>
+          <Select
+            label="Categoría"
+            value={categoryId}
+            onChange={(event) => setCategoryId(event.target.value)}
+            disabled={categoriesUnavailable}
+          >
+            <MenuItem value="all">Todas</MenuItem>
+            {categories.map((cat) => (
+              <MenuItem key={cat.id ?? cat.nombre} value={String(cat.id ?? cat.nombre)}>
+                {cat.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
+      {categoriesUnavailable && (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Categorías no disponibles en API.
+        </Typography>
+      )}
       </Stack>
 
       {loading ? (
@@ -108,32 +129,27 @@ export default function Catalog() {
             Cargando catálogo...
           </Typography>
         </Box>
+      ) : productsUnavailable ? (
+        <Box sx={{ py: 6 }}>
+          <EmptyState title="No disponible en API" description="El endpoint de productos no responde." />
+        </Box>
       ) : filteredProducts.length === 0 ? (
         <Box sx={{ py: 6 }}>
-          <Typography align="center" color="text.secondary">
-            No hay resultados
-          </Typography>
+          <EmptyState
+            title="No hay resultados"
+            description="Prueba con otra búsqueda o categoría."
+          />
         </Box>
       ) : (
         <Grid container spacing={3} sx={{ mt: 1 }}>
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product.id ?? product.nombre}>
-              <Card>
-                <CardContent>
-                  <Typography fontWeight={700}>{product.nombre}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    {product.descripcion || "Sin descripción"}
-                  </Typography>
-                  <Typography sx={{ mt: 2 }} fontWeight={700}>
-                    {product.precio ? `$${product.precio}` : "Precio a consultar"}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button component={NavLink} to={`/catalogo/${product.id ?? ""}`}>
-                    Ver detalle
-                  </Button>
-                </CardActions>
-              </Card>
+              <ProductCard
+                product={product}
+                detailsPath={`/producto/${product.id ?? ""}`}
+                showAddToCart={role === "CLIENTE"}
+                onAddToCart={handleAddToCart}
+              />
             </Grid>
           ))}
         </Grid>

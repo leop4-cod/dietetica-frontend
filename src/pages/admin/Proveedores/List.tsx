@@ -24,6 +24,7 @@ import { getApiErrorMessage } from "../../../api/axios";
 import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import EmptyState from "../../../components/EmptyState";
 
 const getRowId = (row: Supplier) => row.id ?? row.email ?? row.nombre ?? Math.random();
 
@@ -31,6 +32,7 @@ export default function ProveedoresList() {
   const { role } = useAuth();
   const [rows, setRows] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [selected, setSelected] = useState<Supplier | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -49,6 +51,7 @@ export default function ProveedoresList() {
       const data = await listSuppliers();
       setRows(Array.isArray(data) ? data : []);
     } catch (error) {
+      setUnavailable((error as any)?.response?.status === 404);
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
       setLoading(false);
@@ -64,7 +67,7 @@ export default function ProveedoresList() {
       { field: "nombre", headerName: "Nombre", flex: 1 },
       { field: "contacto", headerName: "Contacto", width: 180 },
       { field: "email", headerName: "Email", width: 200 },
-      { field: "telefono", headerName: "Teléfono", width: 140 },
+      { field: "telefono", headerName: "Telefono", width: 140 },
       {
         field: "acciones",
         headerName: "Acciones",
@@ -168,17 +171,26 @@ export default function ProveedoresList() {
         )}
       </Stack>
 
-      <Box sx={{ mt: 3 }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowId={getRowId}
-          autoHeight
-          loading={loading}
-          pageSizeOptions={[5, 10, 25]}
-          disableRowSelectionOnClick
-        />
-      </Box>
+      {unavailable ? (
+        <Box sx={{ mt: 3 }}>
+          <EmptyState
+            title="No disponible en API"
+            description="El endpoint de proveedores no existe."
+          />
+        </Box>
+      ) : (
+        <Box sx={{ mt: 3 }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            getRowId={getRowId}
+            autoHeight
+            loading={loading}
+            pageSizeOptions={[5, 10, 25]}
+            disableRowSelectionOnClick
+          />
+        </Box>
+      )}
 
       <Dialog open={formOpen} onClose={() => setFormOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{selected ? "Editar proveedor" : "Nuevo proveedor"}</DialogTitle>
@@ -201,7 +213,7 @@ export default function ProveedoresList() {
               onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
             />
             <TextField
-              label="Teléfono"
+              label="Telefono"
               value={form.telefono}
               onChange={(event) => setForm((prev) => ({ ...prev, telefono: event.target.value }))}
             />
@@ -218,7 +230,7 @@ export default function ProveedoresList() {
       <ConfirmDialog
         open={confirmOpen}
         title="Eliminar proveedor"
-        description="Esta acción no se puede deshacer."
+        description="Esta accion no se puede deshacer."
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
         confirmText="Eliminar"

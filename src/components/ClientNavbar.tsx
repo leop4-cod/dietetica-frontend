@@ -19,29 +19,32 @@ export default function ClientNavbar() {
           variant="h6"
           fontWeight={800}
           component={NavLink}
-          to="/app"
+          to="/app/cliente"
           sx={{ textDecoration: "none", color: "inherit" }}
         >
           Nutrivida
         </Typography>
         <Stack direction="row" spacing={1} sx={{ ml: 3, display: { xs: "none", md: "flex" } }}>
-          <Button component={NavLink} to="/app/catalogo">
+          <Button component={NavLink} to="/app/cliente/catalogo">
             Catálogo
           </Button>
-          <Button component={NavLink} to="/app/carrito">
+          <Button component={NavLink} to="/app/cliente/carrito">
             Carrito
           </Button>
-          <Button component={NavLink} to="/app/mis-compras">
+          <Button component={NavLink} to="/app/cliente/mis-compras">
             Mis compras
           </Button>
-          <Button component={NavLink} to="/app/direcciones">
+          <Button component={NavLink} to="/app/cliente/direcciones">
             Direcciones
           </Button>
-          <Button component={NavLink} to="/app/resenas">
+          <Button component={NavLink} to="/app/cliente/resenas">
             Reseñas
           </Button>
-          <Button component={NavLink} to="/app/planes">
+          <Button component={NavLink} to="/app/cliente/planes">
             Planes
+          </Button>
+          <Button component={NavLink} to="/app/cliente/citas">
+            Citas
           </Button>
         </Stack>
         <Box sx={{ flexGrow: 1 }} />

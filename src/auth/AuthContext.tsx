@@ -1,9 +1,10 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { login as loginRequest } from "../api/auth.service";
+import { getUser } from "../api/users.service";
 import type { User } from "../api/auth.service";
 import { STORAGE_TOKEN_KEY, STORAGE_USER_KEY } from "../api/axios";
-import { can, normalizeRole, type Role } from "./permissions";
+import { normalizeRole, type Role } from "./permissions";
 
 type AuthContextValue = {
   user: User | null;
@@ -59,11 +60,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!data.access_token) {
         throw new Error("No recibimos el token de acceso.");
       }
-      const normalizedRole = normalizeRole(data.user?.role ?? (data.user as any)?.rol);
-      if (mode === "admin" && !can(normalizedRole, "view")) {
+      let user = data.user;
+      let normalizedRole = normalizeRole(user?.role ?? (user as any)?.rol);
+      if (!normalizedRole && user?.id) {
+        const freshUser = await getUser(String(user.id));
+        user = { ...user, ...freshUser } as User;
+        normalizedRole = normalizeRole((user as any)?.role ?? (user as any)?.rol);
+      }
+      if (mode === "admin" && normalizedRole !== "ADMIN" && normalizedRole !== "EMPLEADO") {
         throw new Error("No autorizado");
       }
-      persistSession(data.access_token, data.user);
+      if (mode === "cliente" && normalizedRole !== "CLIENTE") {
+        throw new Error("No autorizado");
+      }
+      persistSession(data.access_token, user);
       return normalizedRole;
     } finally {
       setLoading(false);

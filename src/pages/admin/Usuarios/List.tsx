@@ -214,8 +214,7 @@ export default function UsuariosList() {
               onChange={(event) => setForm((prev) => ({ ...prev, rol: event.target.value }))}
             >
               <MenuItem value="admin">Admin</MenuItem>
-              <MenuItem value="empleado">Editor</MenuItem>
-              <MenuItem value="operador">Operador</MenuItem>
+              <MenuItem value="empleado">Empleado</MenuItem>
               <MenuItem value="cliente">Cliente</MenuItem>
             </TextField>
           </Stack>

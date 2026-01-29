@@ -13,16 +13,16 @@ import { hasRole, useAuth } from "../auth/AuthContext";
 import type { Role } from "../auth/permissions";
 
 const navItems = [
-  { label: "Dashboard", path: "/admin/dashboard", roles: ["ADMIN", "EDITOR", "OPERADOR", "DOCTOR"] as Role[] },
-  { label: "Productos", path: "/admin/productos", roles: ["ADMIN", "EDITOR", "OPERADOR", "DOCTOR"] as Role[] },
-  { label: "Categorías", path: "/admin/categorias", roles: ["ADMIN", "EDITOR", "OPERADOR", "DOCTOR"] as Role[] },
-  { label: "Planes nutricionales", path: "/admin/planes", roles: ["ADMIN", "EDITOR", "DOCTOR"] as Role[] },
-  { label: "Ventas", path: "/admin/ventas", roles: ["ADMIN", "EDITOR", "OPERADOR", "DOCTOR"] as Role[] },
-  { label: "Inventario", path: "/admin/inventario", roles: ["ADMIN", "OPERADOR", "DOCTOR"] as Role[] },
-  { label: "Cupones", path: "/admin/cupones", roles: ["ADMIN", "EDITOR"] as Role[] },
-  { label: "Proveedores", path: "/admin/proveedores", roles: ["ADMIN", "EDITOR"] as Role[] },
-  { label: "Usuarios", path: "/admin/usuarios", roles: ["ADMIN"] as Role[] },
-  { label: "Auth logs", path: "/admin/auth-logs", roles: ["ADMIN"] as Role[] },
+  { label: "Dashboard", path: "/app/admin/dashboard", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Productos", path: "/app/admin/productos", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Categorías", path: "/app/admin/categorias", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Planes nutricionales", path: "/app/admin/planes", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Ventas", path: "/app/admin/ventas", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Inventario", path: "/app/admin/inventario", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Cupones", path: "/app/admin/cupones", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Proveedores", path: "/app/admin/proveedores", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Usuarios", path: "/app/admin/usuarios", roles: ["ADMIN"] as Role[] },
+  { label: "Auth logs", path: "/app/admin/auth-logs", roles: ["ADMIN"] as Role[] },
 ];
 
 type Props = {

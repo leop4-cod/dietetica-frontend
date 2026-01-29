@@ -33,6 +33,7 @@ type FormState = {
   stock: string;
   categoria_id: string;
   activo: boolean;
+  image_url: string;
 };
 
 export default function ProductsForm() {
@@ -53,6 +54,7 @@ export default function ProductsForm() {
     stock: "",
     categoria_id: "",
     activo: true,
+    image_url: "",
   });
 
   const canCreate = can(role, "create");
@@ -71,13 +73,9 @@ export default function ProductsForm() {
             descripcion: product.descripcion ?? "",
             precio: product.precio !== undefined ? String(product.precio) : "",
             stock: product.inventory?.stock !== undefined ? String(product.inventory?.stock) : "",
-            categoria_id: String(
-              product.category?.id ??
-                product.categoria?.id ??
-                (product as any)?.categoria_id ??
-                ""
-            ),
+            categoria_id: String(product.category?.id ?? (product as any)?.categoria_id ?? ""),
             activo: product.activo ?? true,
+            image_url: (product as any)?.image_url ?? "",
           });
         }
       } catch (error) {
@@ -126,24 +124,25 @@ export default function ProductsForm() {
     }
     setSaving(true);
     try {
-      const payload: Partial<Product> & { categoria_id: number; stock?: number } = {
-        nombre: form.nombre.trim(),
-        descripcion: form.descripcion.trim(),
-        precio: Number(form.precio),
-        categoria_id: Number(form.categoria_id),
-        activo: form.activo,
-      };
+    const payload: Partial<Product> & { categoria_id: number; stock?: number } = {
+      nombre: form.nombre.trim(),
+      descripcion: form.descripcion.trim(),
+      precio: Number(form.precio),
+      categoria_id: Number(form.categoria_id),
+      activo: form.activo,
+      image_url: form.image_url.trim() || undefined,
+    };
       if (form.stock.trim().length > 0) {
         payload.stock = Number(form.stock);
       }
       if (isEdit && id) {
         await updateProduct(id, payload);
         setSnackbar({ message: "Producto actualizado.", type: "success" });
-        navigate(`/admin/productos/${id}`, { replace: true });
+        navigate(`/app/admin/productos/${id}`, { replace: true });
       } else {
         const created = await createProduct(payload);
         setSnackbar({ message: "Producto creado.", type: "success" });
-        navigate(`/admin/productos/${created.id}`, { replace: true });
+        navigate(`/app/admin/productos/${created.id}`, { replace: true });
       }
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
@@ -197,6 +196,12 @@ export default function ProductsForm() {
               error={errors.stock}
               helperText={errors.stock ? "No puede ser negativo" : "Opcional"}
             />
+            <TextField
+              label="URL de imagen"
+              value={form.image_url}
+              onChange={handleChange("image_url")}
+              helperText="Opcional"
+            />
             <FormControl required error={errors.categoria_id}>
               <InputLabel>Categoría</InputLabel>
               <Select
@@ -218,7 +223,7 @@ export default function ProductsForm() {
               label="Activo"
             />
             <Stack direction="row" spacing={2}>
-              <Button variant="outlined" onClick={() => navigate("/admin/productos")}>
+              <Button variant="outlined" onClick={() => navigate("/app/admin/productos")}>
                 Cancelar
               </Button>
               <Button type="submit" variant="contained" disabled={saving || !isValid}>

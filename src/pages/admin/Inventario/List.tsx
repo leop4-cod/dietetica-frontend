@@ -19,6 +19,7 @@ import type { Product } from "../../../types/product";
 import { getApiErrorMessage } from "../../../api/axios";
 import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
+import EmptyState from "../../../components/EmptyState";
 
 const getRowId = (row: Product) => row.id ?? row.nombre;
 
@@ -26,6 +27,7 @@ export default function InventarioList() {
   const { role } = useAuth();
   const [rows, setRows] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
   const [stockValue, setStockValue] = useState("");
   const [open, setOpen] = useState(false);
@@ -42,6 +44,7 @@ export default function InventarioList() {
       const result = await listProducts({ page: 1, limit: 200 });
       setRows(result.items ?? []);
     } catch (error) {
+      setUnavailable((error as any)?.response?.status === 404);
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
       setLoading(false);
@@ -107,6 +110,10 @@ export default function InventarioList() {
       <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
         Inventario
       </Typography>
+      {unavailable ? (
+        <EmptyState title="No disponible en API" description="El endpoint de inventario no existe." />
+      ) : (
+        <>
       <TextField
         size="small"
         label="Buscar"
@@ -125,6 +132,8 @@ export default function InventarioList() {
         pageSizeOptions={[5, 10, 25]}
         disableRowSelectionOnClick
       />
+        </>
+      )}
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle>Actualizar stock</DialogTitle>

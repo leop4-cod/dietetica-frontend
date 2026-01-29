@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Box, Card, CardContent, Snackbar, Stack, Typography } from "@mui/material";
+import { Alert, Box, Card, CardContent, Snackbar, Stack, Typography } from "@mui/material";
 import { listNutritionPlans, type NutritionPlan } from "../../api/nutrition-plans.service";
 import { getApiErrorMessage } from "../../api/axios";
+import EmptyState from "../../components/EmptyState";
 
 export default function Planes() {
   const [plans, setPlans] = useState<NutritionPlan[]>([]);
@@ -28,19 +29,26 @@ export default function Planes() {
       </Typography>
 
       {plans.length === 0 ? (
-        <Typography color="text.secondary">No hay planes disponibles.</Typography>
+        <EmptyState
+          title="No hay planes disponibles"
+          description="Cuando el backend tenga planes activos aparecerán aquí."
+        />
       ) : (
         <Stack spacing={2}>
           {plans.map((plan) => (
-            <Card key={plan.id ?? plan._id ?? plan.nombre}>
+            <Card key={plan.id ?? plan._id ?? plan.objetivo}>
               <CardContent>
-                <Typography fontWeight={700}>{plan.nombre ?? "Plan nutricional"}</Typography>
+                <Typography fontWeight={700}>{plan.objetivo}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {plan.descripcion ?? plan.objetivo ?? "Sin descripción"}
+                  Calorías diarias: {plan.calorias_diarias}
                 </Typography>
-                {plan.calorias_diarias !== undefined && (
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    Calorías diarias: {plan.calorias_diarias}
+                {plan.recomendaciones?.length ? (
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    {plan.recomendaciones.join(" · ")}
+                  </Typography>
+                ) : (
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Sin recomendaciones registradas
                   </Typography>
                 )}
               </CardContent>

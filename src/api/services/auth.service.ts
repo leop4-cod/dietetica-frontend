@@ -1,13 +1,14 @@
-import { api } from "../axios";
+import { api, unwrapData } from "../axios";
+import type { ApiResponse } from "../../types/api";
 
-export type Role = "ADMIN" | "EDITOR" | "OPERADOR" | "CLIENTE";
+export type Role = "ADMIN" | "EMPLEADO" | "CLIENTE";
 
 export type User = {
   id: string | number;
   nombre?: string;
-  name?: string;
   email?: string;
   role?: Role | string;
+  rol?: string;
 };
 
 export type LoginBody = {
@@ -16,7 +17,7 @@ export type LoginBody = {
 };
 
 export type LoginResponse = {
-  accessToken: string;
+  access_token: string;
   user: User;
 };
 
@@ -33,33 +34,12 @@ export type RegisterResponse = {
   user?: User;
 };
 
-const extractAuthData = (data: any): LoginResponse => {
-  const raw = data?.data ?? data ?? {};
-  return {
-    accessToken: raw.accessToken ?? raw.access_token ?? raw.token ?? "",
-    user: raw.user ?? raw.usuario ?? raw.profile ?? {},
-  };
-};
-
 export async function login(body: LoginBody): Promise<LoginResponse> {
-  const { data } = await api.post("/auth/login", body);
-  return extractAuthData(data);
+  const response = await api.post<ApiResponse<LoginResponse>>("/auth/login", body);
+  return unwrapData(response);
 }
-
-export async function me(): Promise<User> {
-  const { data } = await api.get("/auth/me");
-  return data?.data ?? data ?? {};
-}
-
-const extractRegisterData = (data: any): RegisterResponse => {
-  const raw = data?.data ?? data ?? {};
-  return {
-    message: raw.message ?? raw?.data?.message ?? raw?.data?.msg,
-    user: raw.user ?? raw?.data?.user ?? raw?.usuario,
-  };
-};
 
 export async function register(body: RegisterBody): Promise<RegisterResponse> {
-  const { data } = await api.post("/auth/register", body);
-  return extractRegisterData(data);
+  const response = await api.post<ApiResponse<RegisterResponse>>("/auth/register", body);
+  return unwrapData(response);
 }

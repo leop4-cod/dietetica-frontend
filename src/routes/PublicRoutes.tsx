@@ -8,6 +8,6 @@ type Props = {
 
 export default function PublicRoutes({ children }: Props) {
   const { token } = useAuth();
-  if (token) return <Navigate to="/admin" replace />;
+  if (token) return <Navigate to="/app/cliente" replace />;
   return <>{children}</>;
 }

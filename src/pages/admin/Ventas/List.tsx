@@ -18,6 +18,7 @@ import { listSales, updateSale, type Sale } from "../../../api/sales.service";
 import { getApiErrorMessage } from "../../../api/axios";
 import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
+import EmptyState from "../../../components/EmptyState";
 
 const getRowId = (row: Sale) => row.id ?? Math.random();
 
@@ -25,6 +26,7 @@ export default function VentasList() {
   const { role } = useAuth();
   const [rows, setRows] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const [selected, setSelected] = useState<Sale | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
@@ -43,6 +45,7 @@ export default function VentasList() {
       const result = await listSales({ page: 1, limit: 50 });
       setRows(result.items ?? []);
     } catch (error) {
+      setUnavailable((error as any)?.response?.status === 404);
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
       setLoading(false);
@@ -137,6 +140,10 @@ export default function VentasList() {
       <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
         Ventas
       </Typography>
+      {unavailable ? (
+        <EmptyState title="No disponible en API" description="El endpoint de ventas no existe." />
+      ) : (
+        <>
       <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 2 }}>
         <TextField
           size="small"
@@ -170,6 +177,8 @@ export default function VentasList() {
         pageSizeOptions={[5, 10, 25]}
         disableRowSelectionOnClick
       />
+        </>
+      )}
 
       <Dialog open={detailOpen} onClose={() => setDetailOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Detalle de venta</DialogTitle>

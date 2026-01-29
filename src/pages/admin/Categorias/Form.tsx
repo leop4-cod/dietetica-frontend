@@ -21,6 +21,7 @@ import { can } from "../../../auth/permissions";
 type FormState = {
   nombre: string;
   descripcion: string;
+  image_url: string;
 };
 
 export default function CategoriesForm() {
@@ -36,6 +37,7 @@ export default function CategoriesForm() {
   const [form, setForm] = useState<FormState>({
     nombre: "",
     descripcion: "",
+    image_url: "",
   });
 
   const canCreate = can(role, "create");
@@ -53,6 +55,7 @@ export default function CategoriesForm() {
         setForm({
           nombre: data.nombre ?? "",
           descripcion: data.descripcion ?? "",
+          image_url: (data as any)?.image_url ?? "",
         });
       } catch (error) {
         setSnackbar({ message: getApiErrorMessage(error), type: "error" });
@@ -90,15 +93,16 @@ export default function CategoriesForm() {
       const payload: Partial<Category> = {
         nombre: form.nombre.trim(),
         descripcion: form.descripcion.trim() || undefined,
+        image_url: form.image_url.trim() || undefined,
       };
       if (isEdit && id) {
         await updateCategory(id, payload);
         setSnackbar({ message: "Categoría actualizada.", type: "success" });
-        navigate(`/admin/categorias/${id}`, { replace: true });
+        navigate(`/app/admin/categorias/${id}`, { replace: true });
       } else {
         const created = await createCategory(payload);
         setSnackbar({ message: "Categoría creada.", type: "success" });
-        navigate(`/admin/categorias/${created.id}`, { replace: true });
+        navigate(`/app/admin/categorias/${created.id}`, { replace: true });
       }
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
@@ -132,8 +136,14 @@ export default function CategoriesForm() {
               multiline
               minRows={3}
             />
+            <TextField
+              label="URL de imagen"
+              value={form.image_url}
+              onChange={(event) => setForm((prev) => ({ ...prev, image_url: event.target.value }))}
+              helperText="Opcional"
+            />
             <Stack direction="row" spacing={2}>
-              <Button variant="outlined" onClick={() => navigate("/admin/categorias")}>
+              <Button variant="outlined" onClick={() => navigate("/app/admin/categorias")}>
                 Cancelar
               </Button>
               <Button type="submit" variant="contained" disabled={saving || !isValid}>

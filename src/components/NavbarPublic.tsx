@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { can, type Role } from "../auth/permissions";
+import { type Role } from "../auth/permissions";
 
-const canAccessAdmin = (role: Role | null) => can(role, "view");
+const canAccessAdmin = (role: Role | null) => role === "ADMIN" || role === "EMPLEADO";
 
 export default function NavbarPublic() {
   const { token, role } = useAuth();
@@ -43,7 +43,7 @@ export default function NavbarPublic() {
           <Button component={NavLink} to="/catalogo">
             Catálogo
           </Button>
-          <Button component={NavLink} to="/app/planes">
+          <Button component={NavLink} to="/app/cliente/planes">
             Planes
           </Button>
           <Button component={NavLink} to="/contacto">
@@ -52,11 +52,11 @@ export default function NavbarPublic() {
         </Stack>
         {token ? (
           canAccessAdmin(role) ? (
-            <Button variant="contained" component={NavLink} to="/admin/dashboard">
+            <Button variant="contained" component={NavLink} to="/app/admin/dashboard">
               Panel
             </Button>
           ) : (
-            <Button variant="contained" component={NavLink} to="/app">
+            <Button variant="contained" component={NavLink} to="/app/cliente">
               Mi cuenta
             </Button>
           )

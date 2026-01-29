@@ -22,7 +22,7 @@ export default function Login() {
     try {
       await login(email.trim(), password.trim());
       setSnackbar({ message: "Bienvenido al panel.", type: "success" });
-      navigate("/admin/dashboard", { replace: true });
+      navigate("/app/admin/dashboard", { replace: true });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     }

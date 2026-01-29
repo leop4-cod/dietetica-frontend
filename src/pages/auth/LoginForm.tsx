@@ -41,9 +41,9 @@ export default function LoginForm({ mode, title, subtitle, showRegister, initial
       const role = await login(email.trim(), password.trim(), mode);
       setSnackbar({ message: "Inicio de sesión exitoso.", type: "success" });
       if (role === "CLIENTE") {
-        navigate("/app", { replace: true });
+        navigate("/app/cliente", { replace: true });
       } else {
-        navigate("/admin/dashboard", { replace: true });
+        navigate("/app/admin/dashboard", { replace: true });
       }
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });

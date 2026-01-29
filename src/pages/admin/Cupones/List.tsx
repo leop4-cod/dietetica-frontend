@@ -25,6 +25,7 @@ import {
 import { getApiErrorMessage } from "../../../api/axios";
 import { useAuth } from "../../../auth/AuthContext";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import EmptyState from "../../../components/EmptyState";
 
 const getRowId = (row: Coupon) => row.id ?? row.codigo ?? Math.random();
 
@@ -32,6 +33,7 @@ export default function CuponesList() {
   const { role } = useAuth();
   const [rows, setRows] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [selected, setSelected] = useState<Coupon | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -53,6 +55,7 @@ export default function CuponesList() {
       const data = await listCoupons();
       setRows(Array.isArray(data) ? data : []);
     } catch (error) {
+      setUnavailable((error as any)?.response?.status === 404);
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     } finally {
       setLoading(false);
@@ -65,14 +68,14 @@ export default function CuponesList() {
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      { field: "codigo", headerName: "Código", flex: 1 },
+      { field: "codigo", headerName: "Codigo", flex: 1 },
       { field: "descuento_porcentaje", headerName: "Descuento %", width: 140 },
       { field: "fecha_expiracion", headerName: "Expira", width: 160 },
       {
         field: "activo",
         headerName: "Activo",
         width: 100,
-        valueGetter: ({ row }) => (row.activo ? "Sí" : "No"),
+        valueGetter: ({ row }) => (row.activo ? "Si" : "No"),
       },
       {
         field: "acciones",
@@ -88,9 +91,9 @@ export default function CuponesList() {
                   setSelected(row);
                   setForm({
                     codigo: row.codigo ?? "",
-                    descuento_porcentaje: row.descuento_porcentaje?.toString() ?? "",
+                    descuento_porcentaje: String(row.descuento_porcentaje ?? ""),
                     fecha_expiracion: row.fecha_expiracion ?? "",
-                    activo: Boolean(row.activo),
+                    activo: row.activo ?? true,
                   });
                   setFormOpen(true);
                 }}
@@ -118,23 +121,23 @@ export default function CuponesList() {
   );
 
   const handleSave = async () => {
-    if (!form.codigo || !form.descuento_porcentaje || !form.fecha_expiracion) {
+    if (!form.codigo || !form.descuento_porcentaje) {
       setSnackbar({ message: "Completa los campos obligatorios.", type: "error" });
       return;
     }
     try {
-      const payload: Coupon = {
+      const payload = {
         codigo: form.codigo.trim(),
         descuento_porcentaje: Number(form.descuento_porcentaje),
-        fecha_expiracion: form.fecha_expiracion,
+        fecha_expiracion: form.fecha_expiracion || undefined,
         activo: form.activo,
       };
       if (selected?.id) {
         await updateCoupon(String(selected.id), payload);
-        setSnackbar({ message: "Cupón actualizado.", type: "success" });
+        setSnackbar({ message: "Cupon actualizado.", type: "success" });
       } else {
         await createCoupon(payload);
-        setSnackbar({ message: "Cupón creado.", type: "success" });
+        setSnackbar({ message: "Cupon creado.", type: "success" });
       }
       setFormOpen(false);
       setSelected(null);
@@ -148,7 +151,7 @@ export default function CuponesList() {
     if (!selected?.id) return;
     try {
       await deleteCoupon(String(selected.id));
-      setSnackbar({ message: "Cupón eliminado.", type: "success" });
+      setSnackbar({ message: "Cupon eliminado.", type: "success" });
       setConfirmOpen(false);
       setSelected(null);
       await load();
@@ -160,49 +163,52 @@ export default function CuponesList() {
   return (
     <Box>
       <Stack direction={{ xs: "column", md: "row" }} spacing={2} justifyContent="space-between">
-        <Typography variant="h4" fontWeight={800}>
-          Cupones
-        </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight={800}>
+            Cupones
+          </Typography>
+          <Typography color="text.secondary">Gestiona descuentos y vigencias.</Typography>
+        </Box>
         {canManage && (
           <Button
             variant="contained"
             onClick={() => {
               setSelected(null);
-              setForm({
-                codigo: "",
-                descuento_porcentaje: "",
-                fecha_expiracion: "",
-                activo: true,
-              });
+              setForm({ codigo: "", descuento_porcentaje: "", fecha_expiracion: "", activo: true });
               setFormOpen(true);
             }}
           >
-            Nuevo cupón
+            Nuevo cupon
           </Button>
         )}
       </Stack>
 
-      <Box sx={{ mt: 3 }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowId={getRowId}
-          autoHeight
-          loading={loading}
-          pageSizeOptions={[5, 10, 25]}
-          disableRowSelectionOnClick
-        />
-      </Box>
+      {unavailable ? (
+        <Box sx={{ mt: 3 }}>
+          <EmptyState title="No disponible en API" description="El endpoint de cupones no existe." />
+        </Box>
+      ) : (
+        <Box sx={{ mt: 3 }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            getRowId={getRowId}
+            autoHeight
+            loading={loading}
+            disableRowSelectionOnClick
+            pageSizeOptions={[5, 10, 25]}
+          />
+        </Box>
+      )}
 
       <Dialog open={formOpen} onClose={() => setFormOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{selected ? "Editar cupón" : "Nuevo cupón"}</DialogTitle>
+        <DialogTitle>{selected ? "Editar cupon" : "Nuevo cupon"}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
             <TextField
-              label="Código"
+              label="Codigo"
               value={form.codigo}
               onChange={(event) => setForm((prev) => ({ ...prev, codigo: event.target.value }))}
-              required
             />
             <TextField
               label="Descuento %"
@@ -211,17 +217,15 @@ export default function CuponesList() {
               onChange={(event) =>
                 setForm((prev) => ({ ...prev, descuento_porcentaje: event.target.value }))
               }
-              required
             />
             <TextField
-              label="Fecha expiración"
+              label="Fecha de expiracion"
               type="date"
-              InputLabelProps={{ shrink: true }}
               value={form.fecha_expiracion}
               onChange={(event) =>
                 setForm((prev) => ({ ...prev, fecha_expiracion: event.target.value }))
               }
-              required
+              InputLabelProps={{ shrink: true }}
             />
             <FormControlLabel
               control={
@@ -246,8 +250,8 @@ export default function CuponesList() {
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Eliminar cupón"
-        description="Esta acción no se puede deshacer."
+        title="Eliminar cupon"
+        description="Esta accion no se puede deshacer."
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
         confirmText="Eliminar"
