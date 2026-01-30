@@ -33,14 +33,10 @@ export default function Catalogo() {
         Catálogo público
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
-        Este listado se alimenta desde tu backend. Usa el panel admin para gestionar
-        productos y categorías.
+        Este listado se alimenta desde la API. Usa el panel admin para gestionar productos y
+        categorías.
       </Typography>
-      {!token && (
-        <Alert severity="info">
-          Tu backend protege el endpoint de productos. Inicia sesión para ver el catálogo.
-        </Alert>
-      )}
+      {!token && <Alert severity="info">Inicia sesión para ver el catálogo.</Alert>}
       {error && <Alert severity="error">{error}</Alert>}
       {loading && (
         <Typography color="text.secondary" sx={{ mt: 2 }}>

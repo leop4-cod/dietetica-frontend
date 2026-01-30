@@ -12,6 +12,7 @@ import {
 import { listSales, type Sale } from "../../api/sales.service";
 import { getApiErrorMessage } from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
+import { formatMoney } from "../../utils/format";
 
 export default function MisCompras() {
   const { user } = useAuth();
@@ -59,7 +60,7 @@ export default function MisCompras() {
                     </Typography>
                     <Typography color="text.secondary">Estado: {sale.estado ?? "-"}</Typography>
                     <Typography sx={{ ml: "auto" }} fontWeight={700}>
-                      ${sale.total?.toFixed(2) ?? "0.00"}
+                      ${formatMoney(sale.total)}
                     </Typography>
                   </Stack>
                   {sale.detalles && sale.detalles.length > 0 && (
@@ -79,7 +80,7 @@ export default function MisCompras() {
               </CardContent>
             </Card>
           ))}
-          <Typography fontWeight={700}>Total gastado: ${totalCompras.toFixed(2)}</Typography>
+          <Typography fontWeight={700}>Total gastado: ${formatMoney(totalCompras)}</Typography>
         </Stack>
       )}
 

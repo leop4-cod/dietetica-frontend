@@ -20,9 +20,11 @@ import { listNutritionPlans } from "../../api/nutrition-plans.service";
 import { getCart } from "../../api/cart.service";
 import { listSales, type Sale } from "../../api/sales.service";
 import { useAuth } from "../../auth/AuthContext";
+import { formatMoney } from "../../utils/format";
 
 export default function ClientDashboard() {
   const { user } = useAuth();
+  const userId = user?.id ?? (user as any)?._id;
   const [productsCount, setProductsCount] = useState(0);
   const [categoriesCount, setCategoriesCount] = useState(0);
   const [plansCount, setPlansCount] = useState(0);
@@ -61,14 +63,18 @@ export default function ClientDashboard() {
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const cart = await getCart();
+        if (!userId) {
+          setCartSummary({ items: 0, total: 0 });
+          return;
+        }
+        const cart = await getCart(String(userId));
         setCartSummary({ items: cart.items?.length ?? 0, total: cart.total ?? 0 });
       } catch {
         setCartSummary({ items: 0, total: 0 });
       }
     };
     loadCart();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const loadSales = async () => {
@@ -154,7 +160,7 @@ export default function ClientDashboard() {
                     Resumen de carrito
                   </Typography>
                   <Typography variant="h6" fontWeight={800}>
-                    {cartSummary.items} items · ${cartSummary.total.toFixed(2)}
+                    {cartSummary.items} items · ${formatMoney(cartSummary.total)}
                   </Typography>
                 </Box>
               </Stack>
@@ -211,7 +217,7 @@ export default function ClientDashboard() {
                       </Typography>
                     </Box>
                     <Box sx={{ ml: "auto" }}>
-                      <Typography fontWeight={700}>${sale.total?.toFixed(2) ?? "0.00"}</Typography>
+                      <Typography fontWeight={700}>${formatMoney(sale.total)}</Typography>
                       <Typography variant="body2" color="text.secondary">
                         {sale.fecha ? new Date(sale.fecha).toLocaleDateString() : "-"}
                       </Typography>

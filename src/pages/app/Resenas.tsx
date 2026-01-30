@@ -14,16 +14,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { listSales } from "../../api/sales.service";
 import { createReview, listReviews, type Review } from "../../api/reviews.service";
 import { getApiErrorMessage } from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
-
-type PurchasedProduct = { id: string; nombre: string };
+import { listProducts } from "../../api/products.service";
+import type { Product } from "../../types/product";
 
 export default function Resenas() {
   const { user } = useAuth();
-  const [purchasedProducts, setPurchasedProducts] = useState<PurchasedProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [productId, setProductId] = useState("");
   const [rating, setRating] = useState(5);
@@ -35,29 +34,14 @@ export default function Resenas() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const sales = await listSales({ page: 1, limit: 50 });
-        const items = sales.items ?? [];
-        const products: PurchasedProduct[] = [];
-        items
-          .filter((sale) => sale.user?.id === user?.id)
-          .forEach((sale) => {
-            sale.detalles?.forEach((detail) => {
-              if (detail.product?.id) {
-                products.push({
-                  id: String(detail.product.id),
-                  nombre: detail.product.nombre ?? "Producto",
-                });
-              }
-            });
-          });
-        const unique = Array.from(new Map(products.map((p) => [p.id, p])).values());
-        setPurchasedProducts(unique);
+        const response = await listProducts({ page: 1, limit: 200 });
+        setProducts(response.items ?? []);
       } catch (error) {
         setSnackbar({ message: getApiErrorMessage(error), type: "error" });
       }
     };
     loadProducts();
-  }, [user?.id]);
+  }, []);
 
   useEffect(() => {
     const loadReviews = async () => {
@@ -74,12 +58,11 @@ export default function Resenas() {
 
   const canSubmit = useMemo(
     () =>
-      purchasedProducts.length > 0 &&
       Boolean(productId) &&
       comentario.trim().length > 0 &&
       rating >= 1 &&
       rating <= 5,
-    [productId, comentario, rating, purchasedProducts.length]
+    [productId, comentario, rating]
   );
 
   const handleSubmit = async () => {
@@ -124,20 +107,14 @@ export default function Resenas() {
                 label="Producto"
                 value={productId}
                 onChange={(event) => setProductId(event.target.value)}
-                disabled={purchasedProducts.length === 0}
               >
-                {purchasedProducts.map((product) => (
-                  <MenuItem key={product.id} value={product.id}>
-                    {product.nombre}
+                {products.map((product) => (
+                  <MenuItem key={product.id ?? product.nombre} value={String(product.id ?? "")}>
+                    {product.nombre ?? "Producto"}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            {purchasedProducts.length === 0 && (
-              <Typography color="text.secondary">
-                No encontramos productos comprados para reseñar.
-              </Typography>
-            )}
             <TextField
               label="Calificación (1-5)"
               type="number"

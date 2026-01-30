@@ -21,6 +21,7 @@ const navItems = [
   { label: "Inventario", path: "/app/admin/inventario", roles: ["ADMIN", "EMPLEADO"] as Role[] },
   { label: "Cupones", path: "/app/admin/cupones", roles: ["ADMIN", "EMPLEADO"] as Role[] },
   { label: "Proveedores", path: "/app/admin/proveedores", roles: ["ADMIN", "EMPLEADO"] as Role[] },
+  { label: "Reservas planes", path: "/app/admin/reservas-planes", roles: ["ADMIN", "EMPLEADO"] as Role[] },
   { label: "Usuarios", path: "/app/admin/usuarios", roles: ["ADMIN"] as Role[] },
   { label: "Auth logs", path: "/app/admin/auth-logs", roles: ["ADMIN"] as Role[] },
 ];

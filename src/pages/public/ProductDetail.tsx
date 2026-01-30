@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -24,13 +24,17 @@ import { useAuth } from "../../auth/AuthContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const { role } = useAuth();
+  const navigate = useNavigate();
+  const { role, user } = useAuth();
+  const userId = user?.id ?? (user as any)?._id;
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
-  const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
-    null
-  );
+  const [snackbar, setSnackbar] = useState<{
+    message: string;
+    type: "success" | "error";
+    action?: "cart";
+  } | null>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -71,12 +75,25 @@ export default function ProductDetail() {
 
   const handleAddToCart = async () => {
     if (!product?.id) return;
+    if (!userId) {
+      setSnackbar({ message: "Inicia sesiÃ³n para agregar al carrito.", type: "error" });
+      return;
+    }
     try {
-      await addToCart({ product_id: String(product.id), cantidad: 1 });
-      setSnackbar({ message: "Producto agregado al carrito.", type: "success" });
+      await addToCart({
+        product_id: String(product.id),
+        cantidad: 1,
+        user_id: String(userId),
+      });
+      setSnackbar({ message: "Producto agregado al carrito.", type: "success", action: "cart" });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     }
+  };
+
+  const handleGoToCart = () => {
+    setSnackbar(null);
+    navigate("/app/cliente/carrito");
   };
 
   if (loading) {
@@ -163,7 +180,20 @@ export default function ProductDetail() {
       </Box>
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
+        {snackbar ? (
+          <Alert
+            severity={snackbar.type}
+            action={
+              snackbar.action === "cart" ? (
+                <Button color="inherit" size="small" onClick={handleGoToCart}>
+                  Ir al carrito
+                </Button>
+              ) : undefined
+            }
+          >
+            {snackbar.message}
+          </Alert>
+        ) : undefined}
       </Snackbar>
     </Stack>
   );

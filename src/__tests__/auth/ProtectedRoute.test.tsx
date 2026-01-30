@@ -44,11 +44,11 @@ describe("ProtectedRoute", () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/login/cliente" element={<div>Login</div>} />
+          <Route path="/" element={<div>Inicio</div>} />
         </Routes>
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Login")).toBeInTheDocument();
+    expect(screen.getByText("Inicio")).toBeInTheDocument();
   });
 });

@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Card, CardContent, Snackbar, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Snackbar, Stack, Typography } from "@mui/material";
 import { listNutritionPlans, type NutritionPlan } from "../../api/nutrition-plans.service";
 import { getApiErrorMessage } from "../../api/axios";
 import EmptyState from "../../components/EmptyState";
+import { createPlanReservation } from "../../api/plan-reservations.service";
+import { useAuth } from "../../auth/AuthContext";
 
 export default function Planes() {
+  const { user } = useAuth();
+  const userId = user?.id ?? (user as any)?._id;
   const [plans, setPlans] = useState<NutritionPlan[]>([]);
   const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
     null
   );
+  const [saving, setSaving] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -21,6 +26,23 @@ export default function Planes() {
     };
     load();
   }, []);
+
+  const handleReserve = async (planId?: string) => {
+    if (!planId) return;
+    if (!userId) {
+      setSnackbar({ message: "Inicia sesiÃ³n para reservar un plan.", type: "error" });
+      return;
+    }
+    setSaving(planId);
+    try {
+      await createPlanReservation({ planId, userId: String(userId) });
+      setSnackbar({ message: "Reserva registrada. Te contactaremos pronto.", type: "success" });
+    } catch (error) {
+      setSnackbar({ message: getApiErrorMessage(error), type: "error" });
+    } finally {
+      setSaving(null);
+    }
+  };
 
   return (
     <Box>
@@ -51,6 +73,14 @@ export default function Planes() {
                     Sin recomendaciones registradas
                   </Typography>
                 )}
+                <Button
+                  variant="contained"
+                  sx={{ mt: 2 }}
+                  onClick={() => handleReserve(String(plan.id ?? plan._id ?? ""))}
+                  disabled={saving === String(plan.id ?? plan._id ?? "")}
+                >
+                  Reservar plan
+                </Button>
               </CardContent>
             </Card>
           ))}

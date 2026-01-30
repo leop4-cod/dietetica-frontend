@@ -9,7 +9,7 @@ export default function ClientNavbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login/cliente", { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (

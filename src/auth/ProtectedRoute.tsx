@@ -7,7 +7,7 @@ type Props = {
   redirectTo?: string;
 };
 
-export default function ProtectedRoute({ children, redirectTo = "/login/cliente" }: Props) {
+export default function ProtectedRoute({ children, redirectTo = "/" }: Props) {
   const { token } = useAuth();
   if (!token) return <Navigate to={redirectTo} replace />;
   return <>{children}</>;

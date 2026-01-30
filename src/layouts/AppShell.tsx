@@ -34,7 +34,7 @@ export default function AppShell() {
 
   const handleLogout = () => {
     logout();
-    nav("/login", { replace: true });
+    nav("/", { replace: true });
   };
 
   const drawerContent = (

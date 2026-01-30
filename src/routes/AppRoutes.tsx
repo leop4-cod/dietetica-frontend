@@ -36,6 +36,7 @@ import CuponesAdmin from "../pages/admin/Cupones/List";
 import ProveedoresAdmin from "../pages/admin/Proveedores/List";
 import UsuariosAdmin from "../pages/admin/Usuarios/List";
 import AuthLogsAdmin from "../pages/admin/AuthLogs/List";
+import PlanReservationsAdmin from "../pages/admin/PlanReservations/List";
 
 export default function AppRoutes() {
   return (
@@ -58,7 +59,7 @@ export default function AppRoutes() {
         <Route
           path="/app/cliente"
           element={
-            <ProtectedRoute redirectTo="/login/cliente">
+            <ProtectedRoute redirectTo="/">
               <RoleGuard roles={["CLIENTE"]}>
                 <ClientLayout />
               </RoleGuard>
@@ -80,7 +81,7 @@ export default function AppRoutes() {
         <Route
           path="/app/admin"
           element={
-            <ProtectedRoute redirectTo="/login/admin">
+            <ProtectedRoute redirectTo="/">
               <RoleGuard roles={["ADMIN", "EMPLEADO"]}>
                 <AdminLayout />
               </RoleGuard>
@@ -109,6 +110,7 @@ export default function AppRoutes() {
           <Route path="cupones" element={<CuponesAdmin />} />
           <Route path="proveedores" element={<ProveedoresAdmin />} />
           <Route path="usuarios" element={<UsuariosAdmin />} />
+          <Route path="reservas-planes" element={<PlanReservationsAdmin />} />
           <Route path="auth-logs" element={<AuthLogsAdmin />} />
         </Route>
 

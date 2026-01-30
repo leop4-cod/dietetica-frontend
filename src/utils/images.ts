@@ -45,6 +45,9 @@ const IMAGE_FIELDS = [
   "url",
 ];
 
+const RAW_API_URL = (import.meta as any).env?.VITE_API_URL || "";
+const API_BASE_URL = RAW_API_URL.replace(/\/+$/, "");
+
 function hashString(value: string): number {
   let hash = 0;
   for (let i = 0; i < value.length; i += 1) {
@@ -61,12 +64,32 @@ function getEntityId(entity: Entity): string {
   );
 }
 
+function normalizeImageUrl(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("data:") ||
+    trimmed.startsWith("blob:")
+  ) {
+    return trimmed;
+  }
+  if (!API_BASE_URL) return trimmed;
+  if (trimmed.startsWith("/")) return `${API_BASE_URL}${trimmed}`;
+  return `${API_BASE_URL}/${trimmed}`;
+}
+
 function extractImage(entity: Entity): string | null {
   if (!entity) return null;
   for (const field of IMAGE_FIELDS) {
     const value = (entity as any)[field];
-    if (typeof value === "string" && value.trim().length > 0) return value;
-    if (Array.isArray(value) && typeof value[0] === "string") return value[0];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return normalizeImageUrl(value);
+    }
+    if (Array.isArray(value) && typeof value[0] === "string") {
+      return normalizeImageUrl(value[0]);
+    }
   }
   return null;
 }

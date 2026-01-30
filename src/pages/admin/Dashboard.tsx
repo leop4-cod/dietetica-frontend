@@ -23,6 +23,7 @@ import Loader from "../../components/Loader";
 import type { Product } from "../../types/product";
 import { useAuth } from "../../auth/AuthContext";
 import { can } from "../../auth/permissions";
+import { formatMoney } from "../../utils/format";
 
 export default function Dashboard() {
   const { role } = useAuth();
@@ -186,7 +187,7 @@ export default function Dashboard() {
                             </Typography>
                           </Box>
                           <Typography fontWeight={700}>
-                            ${sale.total?.toFixed(2) ?? "0.00"}
+                            ${formatMoney(sale.total)}
                           </Typography>
                         </Stack>
                       ))}

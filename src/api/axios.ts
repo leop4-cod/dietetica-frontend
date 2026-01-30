@@ -35,8 +35,7 @@ api.interceptors.response.use(
       localStorage.removeItem(STORAGE_TOKEN_KEY);
       localStorage.removeItem(STORAGE_USER_KEY);
       window.dispatchEvent(new Event("auth:logout"));
-      const isAdminPath = window.location.pathname.startsWith("/app/admin");
-      const target = isAdminPath ? "/login/admin" : "/login/cliente";
+      const target = "/";
       if (window.location.pathname !== target) {
         window.location.assign(target);
       }

@@ -59,21 +59,17 @@ export default function Home() {
 
   useEffect(() => {
     const loadPlans = async () => {
-      if (!token) {
-        setPlans([]);
-        return;
-      }
       try {
         const data = await listNutritionPlans();
         setPlans(Array.isArray(data) ? data : []);
       } catch (error) {
         const status = (error as AxiosError)?.response?.status;
-        setPlansUnavailable(status === 404);
+        setPlansUnavailable(status === 404 || status === 401 || status === 403);
         setPlans([]);
       }
     };
     loadPlans();
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     const loadReviews = async () => {
@@ -93,6 +89,26 @@ export default function Home() {
   const visibleProducts = useMemo(() => products.slice(0, 12), [products]);
   const visiblePlans = useMemo(() => plans.slice(0, 3), [plans]);
   const visibleReviews = useMemo(() => reviews.slice(0, 3), [reviews]);
+  const fallbackReviews: Review[] = [
+    {
+      id: "demo-1",
+      comentario: "Excelente atencion y planes faciles de seguir. Me senti acompanada todo el proceso.",
+      rating: 5,
+    },
+    {
+      id: "demo-2",
+      comentario: "Productos de muy buena calidad y recomendaciones claras. Resultados en pocas semanas.",
+      rating: 5,
+    },
+    {
+      id: "demo-3",
+      comentario: "La plataforma es super facil de usar y el plan se ajusto perfecto a mi rutina.",
+      rating: 4,
+    },
+  ];
+  const reviewsAction = token
+    ? { actionLabel: "Dejar resena", onAction: () => navigate("/app/cliente/resenas") }
+    : { actionLabel: "Iniciar sesion", onAction: () => navigate("/login/cliente") };
 
   return (
     <Box>
@@ -191,15 +207,7 @@ export default function Home() {
           <Typography variant="h4" fontWeight={800} sx={{ mb: 3 }}>
             Planes nutricionales
           </Typography>
-          {!token ? (
-            <EmptyState
-              title="Necesitas iniciar sesión"
-              description="El backend protege los planes nutricionales con JWT."
-              actionLabel="Iniciar sesión"
-              onAction={() => navigate("/login/cliente")}
-              icon={<SpaIcon fontSize="inherit" />}
-            />
-          ) : plansUnavailable ? (
+          {plansUnavailable ? (
             <EmptyState
               title="No disponible en API"
               description="El endpoint de planes nutricionales no está disponible."
@@ -234,45 +242,41 @@ export default function Home() {
               description="El endpoint de reseñas no está disponible."
               icon={<RateReviewIcon fontSize="inherit" />}
             />
-          ) : visibleReviews.length === 0 ? (
-            <EmptyState
-              title="Aún no hay reseñas publicadas"
-              description="Invita a tus clientes a dejar su opinión."
-              icon={<RateReviewIcon fontSize="inherit" />}
-            />
-          ) : (
-            <Grid container spacing={3}>
-              {visibleReviews.map((review) => (
-                <Grid item xs={12} md={4} key={review._id ?? review.id}>
-                  <Box
-                    sx={{
-                      borderRadius: 2,
-                      overflow: "hidden",
-                      border: "1px solid rgba(46, 125, 111, 0.12)",
-                      backgroundColor: "background.paper",
-                      boxShadow: "0 12px 24px rgba(46, 125, 111, 0.12)",
-                    }}
-                  >
-                    <Box
-                      component="img"
-                      src={getImageUrl(review, "review")}
-                      alt="Reseña"
-                      sx={{ width: "100%", height: 160, objectFit: "cover" }}
-                    />
-                    <Box sx={{ p: 2 }}>
-                      <Typography fontWeight={700}>Reseña</Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        {review.comentario || "Sin comentario"}
-                      </Typography>
-                      <Typography variant="body2" sx={{ mt: 2 }}>
-                        Calificación: {review.rating ?? "-"}
-                      </Typography>
-                    </Box>
-                  </Box>
+            ) : (
+              <Stack spacing={2}>
+                <Grid container spacing={3}>
+                  {(visibleReviews.length > 0 ? visibleReviews : fallbackReviews).map((review) => (
+                    <Grid item xs={12} md={4} key={review._id ?? review.id}>
+                      <Box
+                        sx={{
+                          borderRadius: 2,
+                          overflow: "hidden",
+                          border: "1px solid rgba(46, 125, 111, 0.12)",
+                          backgroundColor: "background.paper",
+                          boxShadow: "0 12px 24px rgba(46, 125, 111, 0.12)",
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src={getImageUrl(review, "review")}
+                          alt="Reseña"
+                          sx={{ width: "100%", height: 160, objectFit: "cover" }}
+                        />
+                        <Box sx={{ p: 2 }}>
+                          <Typography fontWeight={700}>Reseña</Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            {review.comentario || "Sin comentario"}
+                          </Typography>
+                          <Typography variant="body2" sx={{ mt: 2 }}>
+                            Calificación: {review.rating ?? "-"}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-          )}
+              </Stack>
+            )}
         </Box>
       </Stack>
     </Box>

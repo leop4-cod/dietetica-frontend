@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
+  Button,
   FormControl,
   GridLegacy as Grid,
   InputLabel,
@@ -22,9 +23,12 @@ import { useAuth } from "../../auth/AuthContext";
 import EmptyState from "../../components/EmptyState";
 import ProductCard from "../../components/ProductCard";
 import type { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Catalog() {
-  const { role } = useAuth();
+  const navigate = useNavigate();
+  const { role, user } = useAuth();
+  const userId = user?.id ?? (user as any)?._id;
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [categoryId, setCategoryId] = useState<string>("all");
@@ -32,9 +36,11 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
   const [productsUnavailable, setProductsUnavailable] = useState(false);
   const [categoriesUnavailable, setCategoriesUnavailable] = useState(false);
-  const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
-    null
-  );
+  const [snackbar, setSnackbar] = useState<{
+    message: string;
+    type: "success" | "error";
+    action?: "cart";
+  } | null>(null);
 
   const fetchCatalog = async () => {
     setLoading(true);
@@ -77,12 +83,25 @@ export default function Catalog() {
 
   const handleAddToCart = async (productId?: string) => {
     if (!productId) return;
+    if (!userId) {
+      setSnackbar({ message: "Inicia sesiÃ³n para agregar al carrito.", type: "error" });
+      return;
+    }
     try {
-      await addToCart({ product_id: String(productId), cantidad: 1 });
-      setSnackbar({ message: "Producto agregado al carrito.", type: "success" });
+      await addToCart({
+        product_id: String(productId),
+        cantidad: 1,
+        user_id: String(userId),
+      });
+      setSnackbar({ message: "Producto agregado al carrito.", type: "success", action: "cart" });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     }
+  };
+
+  const handleGoToCart = () => {
+    setSnackbar(null);
+    navigate("/app/cliente/carrito");
   };
 
   return (
@@ -160,7 +179,20 @@ export default function Catalog() {
         autoHideDuration={5000}
         onClose={() => setSnackbar(null)}
       >
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
+        {snackbar ? (
+          <Alert
+            severity={snackbar.type}
+            action={
+              snackbar.action === "cart" ? (
+                <Button color="inherit" size="small" onClick={handleGoToCart}>
+                  Ir al carrito
+                </Button>
+              ) : undefined
+            }
+          >
+            {snackbar.message}
+          </Alert>
+        ) : undefined}
       </Snackbar>
     </Box>
   );

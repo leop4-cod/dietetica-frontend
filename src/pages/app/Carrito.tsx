@@ -14,9 +14,11 @@ import { getCart, removeFromCart } from "../../api/cart.service";
 import { createSale } from "../../api/sales.service";
 import { getApiErrorMessage } from "../../api/axios";
 import { useAuth } from "../../auth/AuthContext";
+import { formatMoney } from "../../utils/format";
 
 export default function Carrito() {
   const { user } = useAuth();
+  const userId = user?.id ?? (user as any)?._id;
   const [cart, setCart] = useState<{ items: any[]; total: number }>({ items: [], total: 0 });
   const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
     null
@@ -24,8 +26,12 @@ export default function Carrito() {
   const [loading, setLoading] = useState(false);
 
   const loadCart = async () => {
+    if (!userId) {
+      setSnackbar({ message: "Inicia sesiÃ³n para ver el carrito.", type: "error" });
+      return;
+    }
     try {
-      const data = await getCart();
+      const data = await getCart(String(userId));
       setCart({ items: data.items ?? [], total: data.total ?? 0 });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
@@ -34,12 +40,16 @@ export default function Carrito() {
 
   useEffect(() => {
     loadCart();
-  }, []);
+  }, [user?.id]);
 
   const handleRemove = async (productId: string) => {
+    if (!userId) {
+      setSnackbar({ message: "Inicia sesiÃ³n para editar el carrito.", type: "error" });
+      return;
+    }
     setLoading(true);
     try {
-      await removeFromCart(productId);
+      await removeFromCart(productId, String(userId));
       await loadCart();
       setSnackbar({ message: "Producto eliminado del carrito.", type: "success" });
     } catch (error) {
@@ -106,7 +116,7 @@ export default function Carrito() {
           <Divider />
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems="center">
             <Typography variant="h6" fontWeight={700}>
-              Total: ${cart.total.toFixed(2)}
+              Total: ${formatMoney(cart.total)}
             </Typography>
             <Button
               variant="contained"

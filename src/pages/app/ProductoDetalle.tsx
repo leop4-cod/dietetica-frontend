@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -20,15 +20,21 @@ import type { Product } from "../../types/product";
 import { getApiErrorMessage } from "../../api/axios";
 import { getImageUrl } from "../../utils/images";
 import EmptyState from "../../components/EmptyState";
+import { useAuth } from "../../auth/AuthContext";
 
 export default function ProductoDetalleCliente() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const userId = user?.id ?? (user as any)?._id;
   const [product, setProduct] = useState<Product | null>(null);
   const [cantidad, setCantidad] = useState(1);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [snackbar, setSnackbar] = useState<{ message: string; type: "success" | "error" } | null>(
-    null
-  );
+  const [snackbar, setSnackbar] = useState<{
+    message: string;
+    type: "success" | "error";
+    action?: "cart";
+  } | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -61,12 +67,25 @@ export default function ProductoDetalleCliente() {
 
   const handleAdd = async () => {
     if (!product?.id) return;
+    if (!userId) {
+      setSnackbar({ message: "Inicia sesiÃ³n para agregar al carrito.", type: "error" });
+      return;
+    }
     try {
-      await addToCart({ product_id: String(product.id), cantidad });
-      setSnackbar({ message: "Producto agregado al carrito.", type: "success" });
+      await addToCart({
+        product_id: String(product.id),
+        cantidad,
+        user_id: String(userId),
+      });
+      setSnackbar({ message: "Producto agregado al carrito.", type: "success", action: "cart" });
     } catch (error) {
       setSnackbar({ message: getApiErrorMessage(error), type: "error" });
     }
+  };
+
+  const handleGoToCart = () => {
+    setSnackbar(null);
+    navigate("/app/cliente/carrito");
   };
 
   const stock = useMemo(() => product?.inventory?.stock ?? null, [product]);
@@ -153,7 +172,20 @@ export default function ProductoDetalleCliente() {
       </Box>
 
       <Snackbar open={Boolean(snackbar)} autoHideDuration={5000} onClose={() => setSnackbar(null)}>
-        {snackbar ? <Alert severity={snackbar.type}>{snackbar.message}</Alert> : undefined}
+        {snackbar ? (
+          <Alert
+            severity={snackbar.type}
+            action={
+              snackbar.action === "cart" ? (
+                <Button color="inherit" size="small" onClick={handleGoToCart}>
+                  Ir al carrito
+                </Button>
+              ) : undefined
+            }
+          >
+            {snackbar.message}
+          </Alert>
+        ) : undefined}
       </Snackbar>
     </Stack>
   );

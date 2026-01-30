@@ -19,6 +19,7 @@ import { getApiErrorMessage } from "../../../api/axios";
 import { useAuth } from "../../../auth/AuthContext";
 import { can } from "../../../auth/permissions";
 import EmptyState from "../../../components/EmptyState";
+import { formatMoney } from "../../../utils/format";
 
 const getRowId = (row: Sale) => row.id ?? Math.random();
 
@@ -189,7 +190,7 @@ export default function VentasList() {
           {selected ? (
             <Stack spacing={1} sx={{ mt: 1 }}>
               <Typography>Cliente: {selected.user?.email ?? "-"}</Typography>
-              <Typography>Total: ${selected.total?.toFixed(2) ?? "0.00"}</Typography>
+              <Typography>Total: ${formatMoney(selected.total)}</Typography>
               <Typography>Estado: {selected.estado ?? "-"}</Typography>
               <Typography>Pago: {selected.metodo_pago ?? "-"}</Typography>
               {selected.detalles && selected.detalles.length > 0 && (
