@@ -49,8 +49,12 @@ jobs:
             mkdir -p /var/www/dietetica-app
             rm -rf /var/www/dietetica-app/*
             cp -r /tmp/dietetica_build/dist/* /var/www/dietetica-app/
-
             chown -R www-data:www-data /var/www/dietetica-app
 
             nginx -t
-            systemctl restart nginx
+
+            sudo systemctl restart nginx || true
+            sudo systemctl --no-pager -l status nginx || true
+            sudo journalctl -xeu nginx --no-pager | tail -n 80 || true
+
+            exit 1
