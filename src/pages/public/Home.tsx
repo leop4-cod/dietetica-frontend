@@ -27,7 +27,7 @@ import { getImageUrl } from "../../utils/images";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [plans, setPlans] = useState<NutritionPlan[]>([]);
