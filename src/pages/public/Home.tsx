@@ -106,9 +106,6 @@ export default function Home() {
       rating: 4,
     },
   ];
-  const reviewsAction = token
-    ? { actionLabel: "Dejar resena", onAction: () => navigate("/app/cliente/resenas") }
-    : { actionLabel: "Iniciar sesion", onAction: () => navigate("/login/cliente") };
 
   return (
     <Box>
