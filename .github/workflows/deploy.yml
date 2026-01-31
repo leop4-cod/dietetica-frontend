@@ -46,15 +46,18 @@ jobs:
           script: |
             set -e
 
+            echo "➡️ Deploying frontend..."
+
             mkdir -p /var/www/dietetica-app
             rm -rf /var/www/dietetica-app/*
             cp -r /tmp/dietetica_build/dist/* /var/www/dietetica-app/
             chown -R www-data:www-data /var/www/dietetica-app
 
+            echo "➡️ Testing nginx config..."
             nginx -t
 
-            sudo systemctl restart nginx || true
-            sudo systemctl --no-pager -l status nginx || true
-            sudo journalctl -xeu nginx --no-pager | tail -n 80 || true
+            echo "➡️ Restarting nginx safely..."
+            sudo systemctl stop nginx || true
+            sudo systemctl start nginx
 
-            exit 1
+            echo "✅ Deploy finished successfully"
